@@ -6,38 +6,42 @@
 //
 
 import Foundation
+import NakedJson
 
 struct AuthFunction {
-    let resolve: (Any?) -> Void
+    let resolve: (Bool) -> Void
 }
 
 extension Based {
     
-    /**
-     
-     */
-    public func auth(token: String?, options: SendTokenOptions? = nil) async -> Any? {
-        if let token = token {
-            await sendToken(token, options)
-        } else {
-            await sendToken()
-        }
-        emitter.emit(type: "auth", token)
+    
+    /// Authorize user with token
+    /// - Parameters:
+    ///   - token: token to be used for auth
+    ///   - options: specific options to be sent with token
+    /// - Returns: Result of authorization
+    ///
+    /// If you send ``nil`` token, sdk will deauthorize user
+    @discardableResult
+    public func signIn(token: String, options: SendTokenOptions? = nil) async -> Bool {
+        await sendToken(token, options)
+        
+        emitter.emit(type: .auth, token)
+        
         return await withCheckedContinuation { continuation in
-            auth.append(AuthFunction(resolve: { continuation.resume(returning: $0) }))
+            auth.append(AuthFunction(resolve: continuation.resume))
         }
     }
     
-    /**
-     
-     */
-    public func auth(token: String?, options: SendTokenOptions? = nil) {
-        if let token = token {
-            Task { await sendToken(token, options) }
-        } else {
-            Task { await sendToken() }
+    @discardableResult
+    public func signOut() async -> Bool {
+        await sendToken()
+        
+        emitter.emit(type: .auth, nil)
+        
+        return await withCheckedContinuation { continuation in
+            auth.append(AuthFunction(resolve: continuation.resume))
         }
-        emitter.emit(type: "auth", token)
     }
 }
 

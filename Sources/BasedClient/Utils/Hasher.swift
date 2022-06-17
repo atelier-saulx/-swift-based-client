@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import NakedJson
 
 infix operator >>>> : BitwiseShiftPrecedence
 
@@ -19,7 +19,7 @@ func >>>> (lhs: Int32, rhs: Int32) -> Int32 {
 }
 
 struct Hasher {
-    let hashObjectIgnoreKeyOrder: (_ input: JSON) -> Int
+    let hashObjectIgnoreKeyOrder: (_ input: Json) -> Int
 }
 
 extension Hasher {
@@ -30,7 +30,7 @@ extension Hasher {
         return x1 * 4096 + x2
     }
     
-    static private func hashObjectIgnoreKeyOrderNest(_ input: JSON, _ startHash: Int32 = 5381, _ startHash2: Int32 = 52711) -> (Int32, Int32) {
+    static private func hashObjectIgnoreKeyOrderNest(_ input: Json, _ startHash: Int32 = 5381, _ startHash2: Int32 = 52711) -> (Int32, Int32) {
         var hash = startHash
         var hash2 = startHash2
         
@@ -50,7 +50,9 @@ extension Hasher {
                     switch element {
                     case .string(let value):
                         f = "\(index):\(value)"
-                    case .number(let value):
+                    case .int(let value):
+                        f = "\(index):\(value)"
+                    case .double(let value):
                         f = "\(index):\(value)"
                     case .null:
                         f = "\(index):null"
@@ -89,7 +91,9 @@ extension Hasher {
                     switch field {
                     case .string(let value):
                         f = "\(key):\(value)"
-                    case .number(let value):
+                    case .int(let value):
+                        f = "\(key)n:\(value)"
+                    case .double(let value):
                         f = "\(key)n:\(value)"
                     case .null:
                         f = "\(key)v:null"
@@ -108,7 +112,7 @@ extension Hasher {
     }
     
     
-    static private func hashObjectIgnoreKeyOrder(_ array: [JSON], _ startHash: Int32, _ secondHash: Int32) -> (Int32, Int32) {
+    static private func hashObjectIgnoreKeyOrder(_ array: [Json], _ startHash: Int32, _ secondHash: Int32) -> (Int32, Int32) {
         var hash = startHash
         var hash2 = secondHash
 
@@ -128,7 +132,9 @@ extension Hasher {
                 switch element {
                 case .string(let value):
                     f = "\(index):\(value)"
-                case .number(let value):
+                case .int(let value):
+                    f = "\(index):\(value)"
+                case .double(let value):
                     f = "\(index):\(value)"
                 case .null:
                     f = "\(index):null"

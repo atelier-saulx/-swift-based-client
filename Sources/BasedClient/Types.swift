@@ -5,9 +5,10 @@
 //  Created by Alexander van der Werff on 31/08/2021.
 //
 
+import Foundation
 
-public typealias DataCallback = (_ data: Any, _ checksum: Int) -> ()
-public typealias ErrorCallback = (_ error: BasedError) -> ()
+public typealias DataCallback = (_ data: Data, _ checksum: Int) async -> Void
+public typealias ErrorCallback = (_ error: BasedError) async -> Void
 public typealias InitialCallback = (
     _ error: BasedError,
     _ subscriptionId: SubscriptionId?,

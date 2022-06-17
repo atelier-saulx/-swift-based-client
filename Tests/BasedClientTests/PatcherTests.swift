@@ -1,5 +1,6 @@
 import XCTest
 @testable import BasedClient
+import NakedJson
 
 final class PatcherTests: XCTestCase {
     
@@ -17,55 +18,55 @@ final class PatcherTests: XCTestCase {
     
     
     func testObjectToArray() {
-        let object = try! JSON(["0": 0, "1": 1, "2": 2, "3": 3])
-        let patch = try! JSON([0, [0, 1, 2, 3, 4]])
-        let patched: [Int] = sut.applyPatch(object, patch)!.array()!
+        let object: Json = ["0": 0, "1": 1, "2": 2, "3": 3]
+        let patch: Json = [0, [0, 1, 2, 3, 4]]
+        let patched = sut.applyPatch(object, patch)
         XCTAssertEqual([0, 1, 2, 3, 4], patched)
     }
     
     
     func testArray() {
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
             ["a", "b", "c", "d"]
         """)!
 
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
             [2,[7,[0,"x","x"],[1,2,0],[0,"z"],[1,2,2]]]
         """)!
         
-        let patched: [String] = sut.applyPatch(a, patch)!.array()!
+        let patched = sut.applyPatch(a, patch)
         XCTAssertEqual(["x", "x", "a", "b", "z", "c", "d"], patched)
     }
     
     
     func testArrayToObject() {
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
             [0, 1, 2, 3, 4]
         """)!
                              
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
             {
                 "4": [1],
                 "___$toObject": true
             }
         """)!
-        let expected = ["0": 0, "1": 1, "2": 2, "3": 3]
-        let patched = sut.applyPatch(a, patch)?.dictionaryValue! as! [String: Int]
+        let expected: Json = ["0": 0, "1": 1, "2": 2, "3": 3]
+        let patched = sut.applyPatch(a, patch)
         XCTAssertEqual(expected, patched)
     }
     
     
     func testArrayToObjectNested() {
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
             { "x": [ 0, 1, 2, 3, 4 ] }
         """)!
         
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
             { "x": { "0": [1], "4": [1], "flap": [ 0, 0 ], "___$toObject": true } }
         """
         )!
 
-        let b: JSON = .from(string: """
+        let b: Json = .from(string: """
               {
                 "x": {
                   "flap": 0,
@@ -77,19 +78,19 @@ final class PatcherTests: XCTestCase {
         """
         )!
         
-        let patched = sut.applyPatch(a, patch)!
-        XCTAssertTrue(b == patched, "\(b) != \(patched)")
+        let patched = sut.applyPatch(a, patch)
+        XCTAssertEqual(b, patched)
     }
     
     
     func testWeirdArray() {
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
             {"upcoming":[2,[10,[1,1,8],[1,1,7],[1,1,4],[1,1,3],[1,1,2],[1,1,1],[1,1,0],[1,1,6],[1,1,5],[2,9,{"id":[0,"maug13"]}]]],"past":[2,[10,[1,1,9],[1,1,4],[1,1,3],[1,1,2],[1,1,1],[1,1,0],[1,1,8],[1,1,7],[1,1,6],[1,1,5]]],"live":[2,[1,[0,{"id":"mau1"}]]]}
 
         """
         )!
 
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
             {
         "upcoming"    : [
         { "id": "maug8" },
@@ -120,7 +121,7 @@ final class PatcherTests: XCTestCase {
         """
     )!
 
-        let b: JSON = .from(string: """
+        let b: Json = .from(string: """
             {
             "upcoming": [
               { "id": "mau2" },
@@ -151,19 +152,19 @@ final class PatcherTests: XCTestCase {
         """
     )!
         
-        let patched = sut.applyPatch(a, patch)!
+        let patched = sut.applyPatch(a, patch)
         
-        XCTAssertTrue(b == patched, "\(b) != \(patched)")
+        XCTAssertEqual(b, patched)
     }
     
     
     func testWeirdArray3RegisterCopy() {
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
              {"past":[2,[10,[2,0,{"id":[0,"mau1"]}],[1,9,0]]]}
          """
         )!
         
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
             {
             "past": [
             { "id": "map1" },
@@ -181,7 +182,7 @@ final class PatcherTests: XCTestCase {
          """
         )!
 
-        let b: JSON = .from(string: """
+        let b: Json = .from(string: """
             {
             "past": [
             { "id": "mau1" },
@@ -199,14 +200,14 @@ final class PatcherTests: XCTestCase {
          """
         )!
         
-        let patched = sut.applyPatch(a, patch)!
+        let patched = sut.applyPatch(a, patch)
         
-        XCTAssertTrue(b == patched, "\(b) != \(patched)")
+        XCTAssertEqual(b, patched)
      }
     
     
     func testArrayPlusNestedObject() {
-        let a: JSON = .from(string: """
+        let a: Json = .from(string: """
         {
         "a": "hello",
         "f": [
@@ -237,7 +238,7 @@ final class PatcherTests: XCTestCase {
         """
         )!
 
-        let b: JSON = .from(string: """
+        let b: Json = .from(string: """
         {
         "f": [
         {
@@ -275,65 +276,57 @@ final class PatcherTests: XCTestCase {
         """
         )!
 
-        let patch: JSON = .from(string: """
+        let patch: Json = .from(string: """
             {"f":[2,[6,[1,2,0],[2,2,{"flurp":{"flurp":[0,{"flurpypants":[1,2,3]}]}}],[1,1,3],[0,{"id":10},{"id":20}]]],"a":[1]}
         """
         )!
         
-        let patched = sut.applyPatch(a, patch)!
+        let patched = sut.applyPatch(a, patch)
         
-        XCTAssertTrue(b == patched, "\(b) != \(patched)")
+        XCTAssertEqual(b, patched)
     }
     
     
     func testArrayAndNestedObject() {
-        let object: JSON = .from(string: """
+        let object: Json = .from(string: """
              {"x":true,"y":true,"cnt":324,"kookiepants":{"x":true,"y":{"g":{"x":true,"flurpypants":"x","myText":"fdwefjwef ewofihewfoihwef weoifh"}}}}
          """
         )!
         
-        var aObjects = [JSON]()
-        var bObjects = [JSON]()
+        var aObjects = [Json]()
+        var bObjects = [Json]()
         
         for _ in 0..<20 {
             aObjects.append(object)
             bObjects.append(object)
         }
         
-        bObjects[5] = JSON.object(["gurken": JSON.bool(true)])
+        bObjects[5] = ["gurken": true]
         
-        let a = JSON.object("f", JSON.array(aObjects))
-        var b = JSON.object("f", JSON.array(bObjects))
+        let a: Json = ["f": .array(aObjects)]
+        var b: Json = ["f": .array(bObjects)]
         
 
-        let patch: JSON = .from(string: #"{"f":[2,[20,[1,5,0],[2,5,{"gurken":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,14,6]]]}"#)!
+        let patch: Json = .from(string: #"{"f":[2,[20,[1,5,0],[2,5,{"gurken":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,14,6]]]}"#)!
         
         let patched = sut.applyPatch(a, patch)!
         
-//        let diff = bObjects.difference(from: patched["f"]!.arrayValue!) { a, b in
-//            a == b
-//        }
+        XCTAssertEqual(b, patched)
         
-        XCTAssertTrue(b == patched, "Not equal!")
-        
-        let patch2: JSON = JSON.from(string: #"{"f":[2,[20,[1,1,0],[2,1,{"flurb":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,1,2],[2,3,{"flura":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,4,4],[2,8,{"gurky":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,1,9],[2,10,{"kookiepants":{"x":[0,false],"y":{"g":{"myText":[0,"yuzi pants"],"x":[1],"flurpypants":[1]}}},"x":[1],"y":[1],"cnt":[1]}],[1,9,11]]]}"#
+        let patch2: Json = .from(string: #"{"f":[2,[20,[1,1,0],[2,1,{"flurb":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,1,2],[2,3,{"flura":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,4,4],[2,8,{"gurky":[0,true],"x":[1],"y":[1],"cnt":[1],"kookiepants":[1]}],[1,1,9],[2,10,{"kookiepants":{"x":[0,false],"y":{"g":{"myText":[0,"yuzi pants"],"x":[1],"flurpypants":[1]}}},"x":[1],"y":[1],"cnt":[1]}],[1,9,11]]]}"#
         )!
 
-        bObjects[8] = JSON.object(["gurky": JSON.bool(true)])
-        bObjects[1] = JSON.object(["flurb": JSON.bool(true)])
-        bObjects[3] = JSON.object(["flura": JSON.bool(true)])
-        let obj: JSON = .from(string: #"{"kookiepants": {"x": false,"y": {"g": {"myText": "yuzi pants"}}}}"#)!
+        bObjects[8] = Json.object(["gurky": true])
+        bObjects[1] = Json.object(["flurb": true])
+        bObjects[3] = Json.object(["flura": true])
+        let obj: Json = .from(string: #"{"kookiepants": {"x": false,"y": {"g": {"myText": "yuzi pants"}}}}"#)!
         bObjects[10] = obj
         
-        b = JSON.object("f", JSON.array(bObjects))
+        b = Json.object(["f": Json.array(bObjects)])
 
         let patched2 = sut.applyPatch(patched, patch2)!
         
         XCTAssertTrue(patched2 == b, "Not equal!")
-        
-//        measure {
-//            _ = sut.applyPatch(a, patch)
-//        }
     }
     
 }

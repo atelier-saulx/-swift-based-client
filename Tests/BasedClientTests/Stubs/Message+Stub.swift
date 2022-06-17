@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AnyCodable
 
 @testable import BasedClient
 
@@ -14,8 +13,11 @@ struct StubMessage: Message {
     var id: Int
     let requestType: RequestType
     var checksum: Int?
-    var codable: [AnyEncodable] {
-        [AnyEncodable(requestType.rawValue)]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
     }
     
     static func random() -> Self {

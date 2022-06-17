@@ -6,14 +6,18 @@
 //
 
 import Foundation
-import AnyCodable
 
 struct TokenMessage: Message {
-    var id: Int
-    var requestType: RequestType { .token }
-    let token: String?
-    var checksum: Int?
-    var codable: [AnyEncodable] {
-        [AnyEncodable(requestType.rawValue), AnyEncodable(token), AnyEncodable(checksum)]
+    let requestType: RequestType = .token
+    let id: Int = 0
+    var token: String?
+    var checksum: Int? = nil
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(token)
+        try container.encode(checksum)
     }
 }

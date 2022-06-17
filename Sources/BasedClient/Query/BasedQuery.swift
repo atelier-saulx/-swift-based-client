@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NakedJson
 
 public typealias QueryItem = BasedQuery.QueryItem
 public typealias Query = BasedQuery
@@ -67,46 +68,28 @@ public extension BasedQuery {
         return jsonString
     }
     
-    func dictionary() -> [String: Any] {
-        var dictionary = [String: Any]()
+    func dictionary() -> [String: Json] {
         switch self {
         case .query(let items):
-            for qItem in items {
-                let result = Self.dictionary(qItem)
-                result.keys.forEach {
-                    dictionary[$0] = result[$0]
-                }
-            }
+            return .init(items.flatMap(Self.dictionary), uniquingKeysWith: { $1 })
         }
-        return dictionary
     }
     
-    private static func dictionary(_ item: QueryItem) -> [String: Any] {
-        var dictionary = [String: Any]()
+    private static func dictionary(_ item: QueryItem) -> [String: Json] {
+        var dictionary = [String: Json]()
         switch item {
           case let .item(name, values, value, items):
             if let values = values {
                 if values.count > 1 {
-                    dictionary[name] = values
+                    dictionary[name] = .array(values.map(Json.string))
                 } else {
-                    dictionary[name] = values[0]
+                    dictionary[name] = .string(values[0])
                 }
             } else if let value = value {
-                dictionary[name] = value
+                dictionary[name] = .bool(value)
             }
             if let items = items {
-                var result = [[String: Any]]()
-                for qItem in items {
-                    result.append(Self.dictionary(qItem))
-                }
-                let flattenedDictionary = result
-                    .flatMap { $0 }
-                    .reduce([String: Any]()) { (dict, tuple) in
-                        var dict = dict
-                        dict.updateValue(tuple.1, forKey: tuple.0)
-                        return dict
-                    }
-                dictionary[name] = flattenedDictionary
+                dictionary[name] = Json.object(.init(items.flatMap(Self.dictionary), uniquingKeysWith: { $1 }))
             }
           }
         return dictionary

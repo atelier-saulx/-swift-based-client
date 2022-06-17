@@ -5,14 +5,14 @@
 //  Created by Alexander van der Werff on 07/12/2021.
 //
 
-import AnyCodable
+import NakedJson
 
 extension Based {
     public func observable(query: Query) -> Observable {
         return Observable(query: query, based: self)
     }
 
-    public func observable(name: String, payload: Any?) -> Observable {
+    public func observable(name: String, payload: Json) -> Observable {
         return Observable(name: name, payload: payload, based: self)
     }
 }
@@ -46,7 +46,7 @@ public class Observable {
         subscriptionId = type.generateSubscriptionId()
     }
     
-    init(name: String, payload: Any?, based: Based) {
+    init(name: String, payload: Json, based: Based) {
         self.type = .func(name, payload)
         self.based = based
         subscriptionId = type.generateSubscriptionId()
@@ -56,18 +56,14 @@ public class Observable {
         onNext: @escaping DataCallback,
         onError: @escaping ErrorCallback
     ) async -> Subscription {
-        var payload: JSON = JSON.null
+        var payload: Json = nil
         var name: String? = nil
         switch type {
         case .query(let query):
-            if let p = try? JSON(query.dictionary()) {
-                payload = p
-            }
+            payload = Json.object(query.dictionary())
         case .func(let n, let pay):
             name = n
-            if let pay = pay,  let p = try? JSON(pay) {
-                payload = p
-            }
+            payload = pay
         }
         let ids = await based.addSubscriber(
             payload: payload,

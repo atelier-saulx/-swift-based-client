@@ -14,17 +14,29 @@ let package = Package(
             targets: ["BasedClient"]),
     ],
     dependencies: [
-        .package(
-            url: "https://github.com/Flight-School/AnyCodable",
-            from: "0.6.2"
-        )
     ],
     targets: [
         .target(
+            name: "NakedJson"
+        ),
+        .testTarget(
+            name: "NakedJsonTests",
+            dependencies: [
+                "NakedJson",
+            ]
+        ),
+        .target(
             name: "BasedClient",
-            dependencies: ["AnyCodable"]),
+            dependencies: [
+                .target(name: "NakedJson"),
+            ]
+        ),
         .testTarget(
             name: "BasedClientTests",
-            dependencies: ["BasedClient"]),
+            dependencies: [
+                "BasedClient",
+                .target(name: "NakedJson"),
+            ]
+        ),
     ]
 )

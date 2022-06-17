@@ -6,8 +6,7 @@
 //
 
 import Foundation
-import AnyCodable
-
+import NakedJson
 
 public final class Based {
     
@@ -122,15 +121,15 @@ extension Based: BasedWebSocketDelegate {
             await messages.removeSubscriptionMessages(with: .unsubscribe)
             await messages.removeSubscriptionMessages(with: .sendSubscriptionData)
         }
-        emitter.emit(type: "disconnect")
+        emitter.emit(type: .disconnect)
     }
     
     func onReconnect() {
-        emitter.emit(type: "reconnect")
+        emitter.emit(type: .reconnect)
     }
     
     func onOpen() {
-        emitter.emit(type: "connect")
+        emitter.emit(type: .connect)
         Task {
             await sendToken(token, sendTokenOptions)
             await sendAllSubscriptions()
@@ -145,28 +144,28 @@ extension Based: BasedWebSocketDelegate {
         case .string(let json):
             guard
                 let jsonData = json.data(using: .utf8),
-                let dataMessage = try? decoder.decode([AnyCodable].self, from: jsonData)
+                let dataMessage = try? decoder.decode([Json].self, from: jsonData)
             else { return }
             
-            switch RequestType(rawValue: dataMessage[0].value as? Int ?? -1) {
-            case .some(.token):
-                if let data = dataMessage[1].value as? [Int], dataMessage.count > 1 {
+            switch RequestType(rawValue: dataMessage[0].intValue ?? -1) {
+            case .token?:
+                if let data = dataMessage[1].intArrayValue, dataMessage.count > 1 {
                     Task { await logoutSubscriptions(data) }
                 }
-                if let state = dataMessage[2].value as? Bool {
+                if let state = dataMessage[2].boolValue {
                     auth.forEach { auth in
                         auth.resolve(!state)
                     }
                 }
                 beingAuth = false
                 auth = []
-            case .some(.set), .some(.get), .some(.configuration), .some(.getConfiguration), .some(.call), .some(.delete), .some(.copy), .some(.digest):
+            case .set?, .get?, .configuration?, .getConfiguration?, .call?, .delete?, .copy?, .digest?:
                 incomingRequest(dataMessage)
-            case .some(.subscription):
+            case .subscription?:
                 //ex: [1,-1725702994954,{\"$isNull\":true},3391353116945]
                 if
-                    let id = dataMessage[1].value as? Int,
-                    let checksum = dataMessage[3].value as? Int,
+                    let id = dataMessage[1].intValue,
+                    let checksum = dataMessage[3].intValue,
                     let jsonData = try? encoder.encode(dataMessage[2]) {
                     
                     Task {
@@ -177,17 +176,21 @@ extension Based: BasedWebSocketDelegate {
                         await incomingSubscription(SubscriptionData(id: id, data: jsonData, checksum: checksum, error: error))
                     }
                 }
-            case .some(.subscriptionDiff):
-                if
-                    let id = dataMessage[1].value as? Int,
-                    let diff = try? JSON(dataMessage[2].value),
-                    let checksums = dataMessage[3].value as? [Int], checksums.count > 1 {
-                    
-                    let previous = checksums[0]
-                    let current = checksums[1]
-                    
-                    Task { await  incomingSubscriptionDiff(SubscriptionDiffData(id: id, patchObject: diff, checksums: (previous: previous, current: current))) }
+            case .subscriptionDiff?:
+                let diff = dataMessage[2]
+                
+                guard
+                    let id = dataMessage[1].intValue,
+                    let checksums = dataMessage[3].intArrayValue,
+                        checksums.count > 1
+                else {
+                    return
                 }
+                    
+                let previous = checksums[0]
+                let current = checksums[1]
+                
+                Task { await  incomingSubscriptionDiff(SubscriptionDiffData(id: id, patchObject: diff, checksums: (previous: previous, current: current))) }
             default:
                 print("no match")
             }
@@ -196,4 +199,15 @@ extension Based: BasedWebSocketDelegate {
         }
     }
     
+}
+
+extension Json {
+    var intArrayValue: [Int]? {
+        guard
+            let result = arrayValue?.map(\.intValue),
+            result.allSatisfy({ $0 != nil })
+        else { return nil }
+        
+        return result.compactMap { $0 }
+    }
 }

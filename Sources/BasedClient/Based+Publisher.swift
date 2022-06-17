@@ -4,11 +4,11 @@
 //
 //  Created by Alexander van der Werff on 13/01/2022.
 //
-#if os(iOS)
+#if os(iOS) || os(macOS)
 
 import Foundation
 import Combine
-
+import NakedJson
 
 extension Based {
     
@@ -43,7 +43,7 @@ extension Based {
         private var based: Based?
         private let type: SubscriptionType
         private var subscriber: S?
-        private var payload: JSON = JSON.null
+        private var payload: Json = nil
         private var name: String? = nil
         
         let dataCallback: DataCallback
@@ -57,14 +57,10 @@ extension Based {
             
             switch type {
             case .query(let query):
-                if let p = try? JSON(query.dictionary()) {
-                    payload = p
-                }
+                payload = .object(query.dictionary())
             case .func(let n, let pay):
                 name = n
-                if let pay = pay,  let p = try? JSON(pay) {
-                    payload = p
-                }
+                payload = pay
             }
             
             dataCallback = { data, checksum in
@@ -114,7 +110,7 @@ extension Based {
         return DataPublisher(type: .query(query), based: self)
     }
     
-    public func publisher<T: Decodable>(name: String, payload: Any?) -> DataPublisher<T> {
+    public func publisher<T: Decodable>(name: String, payload: Json = [:]) -> DataPublisher<T> {
         return DataPublisher(type: .func(name, payload), based: self)
     }
     

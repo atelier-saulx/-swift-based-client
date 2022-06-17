@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AnyCodable
+import NakedJson
 
 
 /// ErrorObject returned from Based server
@@ -22,24 +22,24 @@ struct ErrorObject: Decodable {
     let type: String
     let message: String
     let name: String?
-    let query: AnyDecodable?
-    let payload: AnyDecodable?
+    let query: Json?
+    let payload: Json?
     let auth: Bool?
     let code: String?
 }
 
-
 extension ErrorObject {
-    init?(from data: AnyCodable) {
-        guard let data = data.value as? [String: Any] else {
+    // FIXME: Use just NakedDecoder
+    init?(from data: Json) {
+        guard let data = data.objectValue else {
             return nil
         }
-        type = data["type"] as? String ?? ""
-        message = data["message"] as? String ?? ""
-        name = data["name"] as? String
-        query = AnyDecodable(data["query"])
-        payload = AnyDecodable(data["payload"])
-        auth = data["auth"] as? Bool
-        code = data["code"] as? String
+        type = data["type"]?.stringValue ?? ""
+        message = data["message"]?.stringValue ?? ""
+        name = data["name"]?.stringValue
+        query = data["query"]
+        payload = data["payload"]
+        auth = data["auth"]?.boolValue
+        code = data["code"]?.stringValue
     }
 }

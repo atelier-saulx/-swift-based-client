@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import NakedJson
 
 struct Patcher {
-    let applyPatch: (_ input: JSON?, _ patch: JSON) -> JSON?
+    let applyPatch: (_ input: Json?, _ patch: Json) -> Json?
 }
 
 extension Patcher {
@@ -28,13 +29,13 @@ extension Patcher {
             }
         } else if let patchObject = patch.objectValue {
             if patchObject["___$toObject"] != nil, let inputValueArray = value.arrayValue {
-                var v = [String: JSON]()
+                var v = [String: Json]()
 
                 for (index, elm) in inputValueArray.enumerated() {
                     v["\(index)"] = elm
                 }
                 
-                value = JSON.object(v)
+                value = Json.object(v)
             }
             
             for (key, val) in patchObject {
@@ -51,15 +52,15 @@ extension Patcher {
     /**
      
      */
-    private static func applyArrayPatch(value: JSON, arrayPatch: JSON) -> JSON? {
+    private static func applyArrayPatch(value: Json, arrayPatch: Json) -> Json? {
         guard
             let arrayPatch = arrayPatch.arrayValue,
             let value = value.arrayValue
         else { return nil }
-        var newArray = [JSON]()
+        var newArray = [Json]()
         
         var aI = -1
-        var patches = [(aI: Int, j: Int, patch: JSON)]()
+        var patches = [(aI: Int, j: Int, patch: Json)]()
         var used = Set<Int>()
         
         for i in 1..<arrayPatch.count {
@@ -124,14 +125,14 @@ extension Patcher {
             }
         }
         
-        return JSON.array(newArray)
+        return Json.array(newArray)
 
     }
     
     /**
      
      */
-    private static func nestedApplyPatch(inputValue: JSON, key: String, patch: JSON) -> JSON? {
+    private static func nestedApplyPatch(inputValue: Json, key: String, patch: Json) -> Json? {
         var value = inputValue.objectValue
         if let patch = patch.arrayValue, let type = patch[0].intValue {
             // 0 - insert
@@ -153,12 +154,12 @@ extension Patcher {
         }
         else if let patchObject = patch.objectValue {
             if patchObject["___$toObject"] != nil, let array = value?[key]?.arrayValue {
-                var v = [String: JSON]()
+                var v = [String: Json]()
                 
                 for (index, elm) in array.enumerated() {
                     v["\(index)"] = elm
                 }
-                value?["\(key)"] = JSON.object(v)
+                value?["\(key)"] = Json.object(v)
             }
             if value?[key] == nil {
                 return nil
@@ -176,7 +177,7 @@ extension Patcher {
             }
         }
         if let object = value {
-            return JSON.object(object)
+            return Json.object(object)
         } else {
             return nil
         }

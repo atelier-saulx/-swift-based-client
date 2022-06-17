@@ -6,36 +6,47 @@
 //
 
 import Foundation
+import NakedJson
 
 actor MessageManager {
     private let messages: Messages
     private let socket: WebSocket
     private let encoder = JSONEncoder()
-    private var activeTasks = [String: Task<(), Never>]()
+    private var activeTasks = [String: Task<(), Error>]()
     
     init(messages: Messages, socket: WebSocket) {
         self.messages = messages
         self.socket = socket
     }
     
-    nonisolated func addMessage(_ message: Message) {
-        Task { await messages.add(message) }
+    func addMessage<Msg: Message>(_ message: Msg) async {
+        await messages.add(message)
     }
     
-    func sendAllMessages() {
+    func sendAllMessages() async {
         guard socket.connected else { return }
         let uuid = UUID().uuidString
         let task = Task {
             guard Task.isCancelled == false else { return }
-            let messages = await messages.popAll().map { $0.codable }
-            if let json = try? encoder.encode(messages),
-                let jsonString = String(data: json, encoding: .utf8) {
+            let nakedEncoder = NakedJsonEncoder()
+            
+            let messages = try await messages.popAll().map { msg in
+                try msg.encode(with: nakedEncoder)
+            }
+            let json = try encoder.encode(messages)
+            if let jsonString = String(data: json, encoding: .utf8) {
                 socket.send(message: .string(jsonString))
                 socket.idleTimeout()
             }
             activeTasks[uuid] = nil
         }
         activeTasks[uuid] = task
+        
+        do {
+            try await task.value
+        } catch {
+            print(error)
+        }
     }
     
     func cancelAll() {

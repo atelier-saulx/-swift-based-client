@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NakedJson
 
 extension Based {
     
@@ -19,7 +20,7 @@ extension Based {
     
     private func _set(query: Query) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            let payload = (try? JSON(query.dictionary())) ?? .null
+            let payload = Json.object(query.dictionary())
             addRequest(type: .set, payload: payload, continuation: continuation, name: "")
         }
     }

@@ -6,18 +6,24 @@
 //
 
 import Foundation
-import AnyCodable
+import NakedJson
 
 extension Based {
+
+    public func call<Payload: Encodable, Result: Decodable>(name: String, payload: Payload) async throws -> Result {
+        let encoder = NakedJsonEncoder()
+        let payload = try encoder.encode(payload)
+        let data = try await _call(name: name, payload: payload)
+        return try decoder.decode(Result.self, from: data)
+    }
     
-    public func call<T: Decodable>(name: String, payload: Any = [:]) async throws -> T {
+    public func call<T: Decodable>(name: String, payload: Json = [:]) async throws -> T {
         let data = try await _call(name: name, payload: payload)
         return try decoder.decode(T.self, from: data)
     }
     
-    private func _call(name: String, payload: Any) async throws -> Data {
+    private func _call(name: String, payload: Json) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
-            let payload = try? JSON(payload)
             addRequest(type: .call, payload: payload, continuation: continuation, name: name)
         }
     }

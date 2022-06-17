@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import NakedJson
 
 public typealias SubscriptionId = Int
 public typealias SubscriberId = String
@@ -40,7 +41,7 @@ actor SubscriptionManager {
 
 struct SubscriptionModel {
     var error: BasedError?
-    var payload: JSON?
+    var payload: Json = nil
     let name: String?
     var subscribers: Dictionary<SubscriberId, SubscriptionCallback> = [:]
 }
@@ -51,19 +52,15 @@ struct SubscriptionCallback {
 }
 
 enum SubscriptionType {
-    case query(Query), `func`(_ name: String, _ payload: Any?)
+    case query(Query), `func`(_ name: String, _ payload: Json)
     
     func generateSubscriptionId() -> Int {
         switch self {
         case .query(let query):
-            if let json = try? JSON(query.dictionary()) {
-                return Current.hasher.hashObjectIgnoreKeyOrder(json)
-            }
+            let json = Json.object(query.dictionary())
+            return Current.hasher.hashObjectIgnoreKeyOrder(json)
         case let .func(name, payload):
-            if let payload = payload, let json = try? JSON(payload) {
-                return Current.hasher.hashObjectIgnoreKeyOrder(JSON.array([JSON.string(name), json]))
-            }
+            return Current.hasher.hashObjectIgnoreKeyOrder(["\(name)", payload])
         }
-        return 0
     }
 }

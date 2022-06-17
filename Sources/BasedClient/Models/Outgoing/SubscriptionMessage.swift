@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AnyCodable
+import NakedJson
 
 // Outgoing data
 
@@ -17,75 +17,106 @@ enum RequestMode: Int, Codable {
     case dontSendBack = 0, sendDataBack, sendDataBackWithSubscription
 }
 
-protocol Message {
+protocol HighLevelEncoder {
+    associatedtype Target
+    
+    func encode<Source: Encodable>(_ value: Source) throws -> Target
+}
+
+extension NakedJsonEncoder: HighLevelEncoder {}
+
+protocol Message: Encodable {
     var requestType: RequestType { get }
-    var checksum: Int? { get set }
-    var codable: [AnyEncodable] { get }
     var id: Int { get }
+    var checksum: Int? { get set }
+}
+
+extension Message {
+    func encode<Encoder: HighLevelEncoder>(with encoder: Encoder) throws -> Encoder.Target {
+        return try encoder.encode(self)
+    }
 }
 
 protocol SubscriptionMessage: Message {}
 
 struct RequestMessage: Message {
-    let requestType: RequestType
-    let id: Int
-    let payload: JSON?
+    var requestType: RequestType
+    var id: Int
+    var payload: Json = nil
     var checksum: Int? = nil
-    var codable: [AnyEncodable] {
-        [AnyEncodable(requestType.rawValue), AnyEncodable(id), AnyEncodable(payload?.anyValue), AnyEncodable(checksum)]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(id)
+        try container.encode(payload)
+        try container.encode(checksum)
     }
 }
 
 struct SubscribeMessage: SubscriptionMessage {
     var requestType: RequestType { .subscription }
-    let id: Int
-    let payload: JSON?
+    var id: Int
+    var payload: Json = nil
     var checksum: Int?
     var requestMode: RequestMode?
-    let functionName: String?
-    var codable: [AnyEncodable] {
-        [
-            AnyEncodable(requestType.rawValue),
-            AnyEncodable(id),
-            AnyEncodable(payload?.anyValue),
-            AnyEncodable(checksum),
-            AnyEncodable(requestMode),
-            AnyEncodable(functionName)
-        ]
+    var functionName: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(id)
+        try container.encode(payload)
+        try container.encode(checksum)
+        try container.encode(requestMode)
+        try container.encode(functionName)
     }
 }
 
 struct SendSubscriptionDataMessage: SubscriptionMessage {
     var requestType: RequestType { .sendSubscriptionData }
-    let id: Int
+    var id: Int
     var checksum: Int?
-    var codable: [AnyEncodable] {
-        [AnyEncodable(requestType.rawValue), AnyEncodable(id), AnyEncodable(checksum)]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(id)
+        try container.encode(checksum)
     }
 }
 
 struct SendSubscriptionGetDataMessage: SubscriptionMessage {
     var requestType: RequestType { .getSubscription }
-    let id: Int
-    let query: [String: Any]?
+    var id: Int
+    var query: Json = nil
     var checksum: Int?
-    let customObservableFuncName: String?
-    var codable: [AnyEncodable] {
-        [
-            AnyEncodable(requestType.rawValue),
-            AnyEncodable(id),
-            AnyEncodable(query),
-            AnyEncodable(checksum),
-            AnyEncodable(customObservableFuncName)
-        ]
+    var customObservableFuncName: String?
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(id)
+        try container.encode(query)
+        try container.encode(checksum)
+        try container.encode(customObservableFuncName)
     }
 }
 
 struct UnsubscribeMessage: SubscriptionMessage {
     var requestType: RequestType { .unsubscribe }
-    let id: Int
+    var id: Int
     var checksum: Int?
-    var codable: [AnyEncodable] {
-        [AnyEncodable(requestType.rawValue), AnyEncodable(id)]
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.unkeyedContainer()
+        
+        try container.encode(requestType)
+        try container.encode(id)
+        try container.encode(checksum)
     }
 }

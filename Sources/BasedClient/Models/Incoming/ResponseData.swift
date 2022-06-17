@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AnyCodable
+import NakedJson
 
 protocol ResponseData {
     var requestType: RequestType { get }
@@ -15,7 +15,7 @@ protocol ResponseData {
 struct SubscriptionDiffData: ResponseData {
     var requestType: RequestType { .subscriptionDiff }
     let id: Int
-    let patchObject: JSON
+    let patchObject: Json
     let checksums: (previous: Int, current: Int)
 }
 

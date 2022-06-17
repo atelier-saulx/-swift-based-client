@@ -6,8 +6,6 @@
 //
 
 import Foundation
-import AnyCodable
-
 
 extension Based {
     
@@ -25,23 +23,17 @@ extension Based {
             self.token = token
             self.sendTokenOptions = options
         } else {
-            var toBeDeleted = [SubscriptionId]()
-            await cache.all().forEach { args in
-                let (id , _) = args
-                if subscriptions[id] != nil {
-                    toBeDeleted.append(id)
-                }
-            }
+            let toBeDeleted = await cache.all()
+                .map { id, _ in id }
+                .filter { subscriptions[$0] != nil }
+            
             await cache.remove(ids: toBeDeleted)
             
             self.token = nil
             self.sendTokenOptions = nil
         }
         if socket.connected {
-            var message = [AnyCodable(RequestType.token.rawValue)]
-            if let token = token {
-                message = [AnyCodable(RequestType.token.rawValue), AnyCodable(token)]
-            }
+            let message = TokenMessage(token: token)
             let jsonData = try! JSONEncoder().encode(message)
             if let jsonString = String(data: jsonData, encoding: .utf8) {
                 socket.send(message: .string(jsonString))
@@ -70,11 +62,11 @@ extension Based {
             subscription?.error = error
             if let subscription = subscription {
                 await subscriptionManager.updateSubscription(with: id, subscription: subscription)
-            }
             
-            subscription?.subscribers.forEach({ (id, callback) in
-                callback.onError?(error)
-            })
+                for (_, callback) in subscription.subscribers {
+                    await callback.onError?(error)
+                }
+            }
         }
         
         await cache.remove(ids: toBeDeletedCache)
@@ -83,6 +75,7 @@ extension Based {
 
 public struct SendTokenOptions {
     public let isBasedUser: Bool
+    
     public init(isBasedUser: Bool) {
         self.isBasedUser = isBasedUser
     }

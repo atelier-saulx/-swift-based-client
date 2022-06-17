@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AnyCodable
+import NakedJson
 
 extension Based {
     
@@ -100,12 +100,12 @@ extension Based {
     ///   - payload: payload description
     ///   - name: name description
     /// - Returns: description
-    func generateSubscriptionId(payload: JSON, name: String?) -> Int {
+    func generateSubscriptionId(payload: Json, name: String?) -> Int {
         var array = [payload]
         if let name = name {
-            array.insert(JSON.string(name), at: 0)
+            array.insert(.string(name), at: 0)
         }
-        return Current.hasher.hashObjectIgnoreKeyOrder(JSON.array(array))
+        return Current.hasher.hashObjectIgnoreKeyOrder(.array(array))
     }
     
 
@@ -120,7 +120,7 @@ extension Based {
     ///   - name: name description
     /// - Returns: description
     func addSubscriber(
-        payload: JSON,
+        payload: Json,
         onData: @escaping DataCallback,
         onError: ErrorCallback?,
         subscriptionId: SubscriptionId?,
@@ -259,7 +259,7 @@ extension Based {
             let subscription = await subscriptionManager.subscription(with: subscriptionId)
             else { return }
         
-        subscription.subscribers[subscriberId]?.onData?(cache.value, cache.checksum)
+        await subscription.subscribers[subscriberId]?.onData?(cache.value, cache.checksum)
         await subscriptionManager.updateSubscription(with: subscriptionId, subscription: subscription)
     }
     
@@ -275,21 +275,18 @@ extension Based {
         let previousChecksum = cache?.checksum
         dataInfo("Checksum in. previous: \(String(describing: previousChecksum)). New \(String(describing: data.checksum)). Error: \(String(describing: data.error))")
         
-        guard data.error == nil else {
+        if let error = data.error {
+            let err = BasedError.from(error)
             
-            let err = BasedError.from(data.error!)
-            
-            if let error = data.error, error.auth == true {
+            if error.auth == true {
                 subscription.error = err
             }
             
-            subscription.subscribers.forEach { subscriberId, callback in
+            for (subscriberId, callback) in subscription.subscribers {
                 if data.error?.auth != true {
-                    Task {
-                        await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
-                    }
+                    await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                 } else {
-                    callback.onError?(err)
+                    await callback.onError?(err)
                 }
             }
             
@@ -317,19 +314,13 @@ extension Based {
                 await subscriptionManager.updateSubscription(with: data.id, subscription: subscription)
             }
             
-//            if let jsonData = try? JSON(data.data.value) {
-//                cache[data.id] = (jsonData, data.checksum ?? 0)
-//            }
-            
             await self.cache.store(data.id, data: (data.data, data.checksum ?? 0))
             
-            subscription.subscribers.forEach { subscriberId, callback in
+            for (subscriberId, callback) in subscription.subscribers {
                 if callback.onData == nil {
-                    Task {
-                        await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
-                    }
+                    await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                 } else {
-                    callback.onData?(data.data, data.checksum ?? 0)
+                    await callback.onData?(data.data, data.checksum ?? 0)
                 }
             }
             
@@ -367,7 +358,7 @@ extension Based {
             var isCorrupt = false
             if
                 let value = cache?.value,
-                let json = try? decoder.decode(JSON.self, from: value),
+                let json = try? decoder.decode(Json.self, from: value),
                 let patched = Current.patcher.applyPatch(json, data.patchObject),
                 let encodedPatch = try? encoder.encode(patched) {
                 
@@ -386,12 +377,12 @@ extension Based {
                 if let updatedCache = cache {
                     await self.cache.store(data.id, data: updatedCache)
                 }
-                subscription.subscribers.forEach { subscriberId, callback in
+                for (subscriberId, callback) in subscription.subscribers {
                     if callback.onData == nil {
-                        Task { await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId) }
+                        await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                     }
                     if let checksum = cache?.checksum, let value = cache?.value {
-                        callback.onData?(value, checksum)
+                        await callback.onData?(value, checksum)
                     }
                 }
             } else {
