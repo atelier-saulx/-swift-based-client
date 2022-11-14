@@ -1,0 +1,984 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		47AEFA0E32594386BDE91EB0 /* ZERO_CHECK */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 3F8EEF569B0F467BB36B5162 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildPhases = (
+				E82B09FB48BB51C4F0439BD2 /* Generate CMakeFiles/ZERO_CHECK */,
+			);
+			dependencies = (
+			);
+			name = ZERO_CHECK;
+			productName = ZERO_CHECK;
+		};
+		A8958DAD113C4D07BC30955E /* ALL_BUILD */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 2506277E675B4C8797578D4E /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildPhases = (
+				0BA0B9B8757A182A4D8C6552 /* Generate CMakeFiles/ALL_BUILD */,
+			);
+			dependencies = (
+				BC099E7019434F33A0CC0DAA /* PBXTargetDependency */,
+				D9F1460D18774F2ABE8F3437 /* PBXTargetDependency */,
+				0326D1FAB8A34DD2A40A5E98 /* PBXTargetDependency */,
+			);
+			name = ALL_BUILD;
+			productName = ALL_BUILD;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		0571DB88F9AA45809632FE1C /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = B6D8B271C3FC4247B7C802A3 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */; };
+		247C2E267788492C8FF39EE3 /* /Users/francesco/saulx/based/packages/cpp-client/src/basedclient.cpp */ = {isa = PBXBuildFile; fileRef = DEE50AF9D14E4EDDA0B97693 /* /Users/francesco/saulx/based/packages/cpp-client/src/basedclient.cpp */; };
+		2B96E685388248EAB0EFECFF /* /Users/francesco/saulx/based/packages/cpp-client/src/connection.cpp */ = {isa = PBXBuildFile; fileRef = 1F0F0E58A0A34A5B9C0CBBF0 /* /Users/francesco/saulx/based/packages/cpp-client/src/connection.cpp */; };
+		441CF5393D1648ECB8B022B4 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = 7F0FFA3AD5454E7DB2952110 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */; };
+		D0725E52F7D947E09D02FB56 /* /Users/francesco/saulx/based/packages/cpp-client/src/utility.cpp */ = {isa = PBXBuildFile; fileRef = 411284AAF624412BA258E56D /* /Users/francesco/saulx/based/packages/cpp-client/src/utility.cpp */; };
+		D2FE944BB7CD455B8D643901 /* /Users/francesco/saulx/based/packages/cpp-client/src/based.cpp */ = {isa = PBXBuildFile; fileRef = 3745E382F94448B4884AE9A9 /* /Users/francesco/saulx/based/packages/cpp-client/src/based.cpp */; };
+		EE610AE804C04DF0A94C0CB1 /* /Users/francesco/saulx/based/packages/cpp-client/example/example.cpp */ = {isa = PBXBuildFile; fileRef = A0C3AC4554B6440B83F54271 /* /Users/francesco/saulx/based/packages/cpp-client/example/example.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		285BB631CCAB4A92B8CC8255 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
+		CC72E390F78B4EE58E9DC9A1 /* RelWithDebInfo */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = RelWithDebInfo;
+		};
+		E030167F76C64FC1AE1D4F80 /* MinSizeRel */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = MinSizeRel;
+		};
+		E852ABBBB263424EB24E7ECE /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		2B9241E32BE8496FAB9AE803 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1325EC8F980F4BBAB39121E6;
+			remoteInfo = "linked-example";
+		};
+		59255DC66543400E99814CC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47AEFA0E32594386BDE91EB0;
+			remoteInfo = ZERO_CHECK;
+		};
+		70E95B71A2E34A7784EB0D2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47AEFA0E32594386BDE91EB0;
+			remoteInfo = ZERO_CHECK;
+		};
+		785678CC509E4C0CB53F67F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDBF4ED5CA2A4FACA65F7174;
+			remoteInfo = based;
+		};
+		A92FA69A42774EDEB504A778 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EDBF4ED5CA2A4FACA65F7174;
+			remoteInfo = based;
+		};
+		E03463B89E5B4B5A885AC704 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 47AEFA0E32594386BDE91EB0;
+			remoteInfo = ZERO_CHECK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		138B53D80B454E16A217C6A0 /* based */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libbased.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F0F0E58A0A34A5B9C0CBBF0 /* /Users/francesco/saulx/based/packages/cpp-client/src/connection.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = connection.cpp; path = src/connection.cpp; sourceTree = SOURCE_ROOT; };
+		3745E382F94448B4884AE9A9 /* /Users/francesco/saulx/based/packages/cpp-client/src/based.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = based.cpp; path = src/based.cpp; sourceTree = SOURCE_ROOT; };
+		411284AAF624412BA258E56D /* /Users/francesco/saulx/based/packages/cpp-client/src/utility.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = utility.cpp; path = src/utility.cpp; sourceTree = SOURCE_ROOT; };
+		7F0FFA3AD5454E7DB2952110 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		A0C3AC4554B6440B83F54271 /* /Users/francesco/saulx/based/packages/cpp-client/example/example.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = example.cpp; path = example/example.cpp; sourceTree = SOURCE_ROOT; };
+		B6D8B271C3FC4247B7C802A3 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		C25477F1E2F94345B8F7D655 /* linked-example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = "linked-example"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DEE50AF9D14E4EDDA0B97693 /* /Users/francesco/saulx/based/packages/cpp-client/src/basedclient.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = basedclient.cpp; path = src/basedclient.cpp; sourceTree = SOURCE_ROOT; };
+		FA67554D9DAF4375A22AF72C /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		16C33ABA28E642F6AFF26FA5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CD1AB5885C6246AAB3319255 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D103EE51A1A4D8BA02DCB84 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		29C69725BE3D4EC88F0DAE40 /* based */ = {
+			isa = PBXGroup;
+			children = (
+				F71F6DAEDF12470984BF0034 /* Source Files */,
+				B6D8B271C3FC4247B7C802A3 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */,
+			);
+			name = based;
+			sourceTree = "<group>";
+		};
+		38E68B81203C495CAF82A1EC /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				A0C3AC4554B6440B83F54271 /* /Users/francesco/saulx/based/packages/cpp-client/example/example.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+		82AD1D02951F40F8BEEF4455 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				B9406C7E5B6149C183A1AD4C /* CMake Rules */,
+				FA67554D9DAF4375A22AF72C /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		B9406C7E5B6149C183A1AD4C /* CMake Rules */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "CMake Rules";
+			sourceTree = "<group>";
+		};
+		C6181F5E32934AE6A72F72AC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				138B53D80B454E16A217C6A0 /* based */,
+				C25477F1E2F94345B8F7D655 /* linked-example */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D094A735965F4E53A257FE05 = {
+			isa = PBXGroup;
+			children = (
+				29C69725BE3D4EC88F0DAE40 /* based */,
+				F676A59F90E74BF581DE8966 /* linked-example */,
+				82AD1D02951F40F8BEEF4455 /* ALL_BUILD */,
+				C6181F5E32934AE6A72F72AC /* Products */,
+				1D103EE51A1A4D8BA02DCB84 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F676A59F90E74BF581DE8966 /* linked-example */ = {
+			isa = PBXGroup;
+			children = (
+				38E68B81203C495CAF82A1EC /* Source Files */,
+				7F0FFA3AD5454E7DB2952110 /* /Users/francesco/saulx/based/packages/cpp-client/CMakeLists.txt */,
+			);
+			name = "linked-example";
+			sourceTree = "<group>";
+		};
+		F71F6DAEDF12470984BF0034 /* Source Files */ = {
+			isa = PBXGroup;
+			children = (
+				3745E382F94448B4884AE9A9 /* /Users/francesco/saulx/based/packages/cpp-client/src/based.cpp */,
+				DEE50AF9D14E4EDDA0B97693 /* /Users/francesco/saulx/based/packages/cpp-client/src/basedclient.cpp */,
+				1F0F0E58A0A34A5B9C0CBBF0 /* /Users/francesco/saulx/based/packages/cpp-client/src/connection.cpp */,
+				411284AAF624412BA258E56D /* /Users/francesco/saulx/based/packages/cpp-client/src/utility.cpp */,
+			);
+			name = "Source Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1325EC8F980F4BBAB39121E6 /* linked-example */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16F939CD6DC74AD09360EFC3 /* Build configuration list for PBXNativeTarget "linked-example" */;
+			buildPhases = (
+				613B3C8B6B204350924BF38A /* Sources */,
+				CD1AB5885C6246AAB3319255 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				728238FDABA948A39B497CD5 /* PBXTargetDependency */,
+				DE35AC6B79E548D18AC79B07 /* PBXTargetDependency */,
+			);
+			name = "linked-example";
+			productName = "linked-example";
+			productReference = C25477F1E2F94345B8F7D655 /* linked-example */;
+			productType = "com.apple.product-type.tool";
+		};
+		EDBF4ED5CA2A4FACA65F7174 /* based */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DA13844C67F44D63993F1CF3 /* Build configuration list for PBXNativeTarget "based" */;
+			buildPhases = (
+				B8C74DA18D5B450780838C2B /* Sources */,
+				16C33ABA28E642F6AFF26FA5 /* Frameworks */,
+				EBE251B0F39B1DCEB4127848 /* CMake PostBuild Rules */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				11BDDFA4421A45DFB35F0F32 /* PBXTargetDependency */,
+			);
+			name = based;
+			productName = based;
+			productReference = 138B53D80B454E16A217C6A0 /* based */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D90C8F0F685E4A7BA7D8D4E0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1340;
+			};
+			buildConfigurationList = 3B48A4AF20F249528F9C995E /* Build configuration list for PBXProject "universal-based" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				285BB631CCAB4A92B8CC8255 /* Debug */,
+				E852ABBBB263424EB24E7ECE /* Release */,
+				E030167F76C64FC1AE1D4F80 /* MinSizeRel */,
+				CC72E390F78B4EE58E9DC9A1 /* RelWithDebInfo */,
+			);
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 0;
+			mainGroup = D094A735965F4E53A257FE05;
+			projectDirPath = "/Users/francesco/saulx/based/packages/cpp-client";
+			projectRoot = "";
+			targets = (
+				A8958DAD113C4D07BC30955E /* ALL_BUILD */,
+				47AEFA0E32594386BDE91EB0 /* ZERO_CHECK */,
+				EDBF4ED5CA2A4FACA65F7174 /* based */,
+				1325EC8F980F4BBAB39121E6 /* linked-example */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0BA0B9B8757A182A4D8C6552 /* Generate CMakeFiles/ALL_BUILD */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ALL_BUILD";
+			outputPaths = (
+"/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/ALL_BUILD"			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  echo Build\\ all\\ projects
+fi
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  echo Build\\ all\\ projects
+fi
+";
+			showEnvVarsInLog = 0;
+		};
+		3C0110FC8322DE7E50886E21 = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+		9B50530E35CC49C82C2FACCF = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here
+exit 0";
+			showEnvVarsInLog = 0;
+		};
+		E82B09FB48BB51C4F0439BD2 /* Generate CMakeFiles/ZERO_CHECK */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Generate CMakeFiles/ZERO_CHECK";
+			outputPaths = (
+"/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/ZERO_CHECK"			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  make -f /Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  make -f /Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  make -f /Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeScripts/ReRunCMake.make
+fi
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  make -f /Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeScripts/ReRunCMake.make
+fi
+";
+			showEnvVarsInLog = 0;
+		};
+		EBE251B0F39B1DCEB4127848 /* CMake PostBuild Rules */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "CMake PostBuild Rules";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e
+if test \"$CONFIGURATION\" = \"Debug\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  /usr/local/Cellar/cmake/3.24.0/bin/cmake -E cmake_symlink_library /Users/francesco/saulx/based/packages/cpp-client/build_ios/Debug${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/Debug${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/Debug${EFFECTIVE_PLATFORM_NAME}/libbased.dylib
+fi
+if test \"$CONFIGURATION\" = \"Release\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  /usr/local/Cellar/cmake/3.24.0/bin/cmake -E cmake_symlink_library /Users/francesco/saulx/based/packages/cpp-client/build_ios/Release${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/Release${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/Release${EFFECTIVE_PLATFORM_NAME}/libbased.dylib
+fi
+if test \"$CONFIGURATION\" = \"MinSizeRel\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  /usr/local/Cellar/cmake/3.24.0/bin/cmake -E cmake_symlink_library /Users/francesco/saulx/based/packages/cpp-client/build_ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}/libbased.dylib
+fi
+if test \"$CONFIGURATION\" = \"RelWithDebInfo\"; then :
+  cd /Users/francesco/saulx/based/packages/cpp-client/build_ios
+  /usr/local/Cellar/cmake/3.24.0/bin/cmake -E cmake_symlink_library /Users/francesco/saulx/based/packages/cpp-client/build_ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}/libbased.dylib /Users/francesco/saulx/based/packages/cpp-client/build_ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}/libbased.dylib
+fi
+";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		613B3C8B6B204350924BF38A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE610AE804C04DF0A94C0CB1 /* /Users/francesco/saulx/based/packages/cpp-client/example/example.cpp */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8C74DA18D5B450780838C2B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2FE944BB7CD455B8D643901 /* /Users/francesco/saulx/based/packages/cpp-client/src/based.cpp */,
+				247C2E267788492C8FF39EE3 /* /Users/francesco/saulx/based/packages/cpp-client/src/basedclient.cpp */,
+				2B96E685388248EAB0EFECFF /* /Users/francesco/saulx/based/packages/cpp-client/src/connection.cpp */,
+				D0725E52F7D947E09D02FB56 /* /Users/francesco/saulx/based/packages/cpp-client/src/utility.cpp */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0326D1FAB8A34DD2A40A5E98 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47AEFA0E32594386BDE91EB0 /* ZERO_CHECK */;
+			targetProxy = E03463B89E5B4B5A885AC704 /* PBXContainerItemProxy */;
+		};
+		11BDDFA4421A45DFB35F0F32 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47AEFA0E32594386BDE91EB0 /* ZERO_CHECK */;
+			targetProxy = 59255DC66543400E99814CC9 /* PBXContainerItemProxy */;
+		};
+		728238FDABA948A39B497CD5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDBF4ED5CA2A4FACA65F7174 /* based */;
+			targetProxy = A92FA69A42774EDEB504A778 /* PBXContainerItemProxy */;
+		};
+		BC099E7019434F33A0CC0DAA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EDBF4ED5CA2A4FACA65F7174 /* based */;
+			targetProxy = 785678CC509E4C0CB53F67F4 /* PBXContainerItemProxy */;
+		};
+		D9F1460D18774F2ABE8F3437 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1325EC8F980F4BBAB39121E6 /* linked-example */;
+			targetProxy = 2B9241E32BE8496FAB9AE803 /* PBXContainerItemProxy */;
+		};
+		DE35AC6B79E548D18AC79B07 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 47AEFA0E32594386BDE91EB0 /* ZERO_CHECK */;
+			targetProxy = 70E95B71A2E34A7784EB0D2C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0A012FC589784E0291352755 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = arm64;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				SDKROOT = iphoneos;
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios/build";
+			};
+			name = RelWithDebInfo;
+		};
+		2077C17BABA441988B4C8287 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		22E07BF945534E29AB43090E /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .dylib;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",based_EXPORTS,ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","$(inherited)");
+				INSTALL_PATH = "@rpath";
+				LIBRARY_STYLE = DYNAMIC;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG -fPIC '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -dynamiclib -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/lib/libcurl.dylib","-lz","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libssl.a","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libcrypto.a","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = based;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		2EBE00B793F44FF7A25498DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","/Users/francesco/saulx/based/packages/cpp-client/src","$(inherited)");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/build_ios/Release${EFFECTIVE_PLATFORM_NAME}","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/build_ios/Release${EFFECTIVE_PLATFORM_NAME}/libbased.dylib","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "linked-example";
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		37AF362F9A694F9BA62C329D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .dylib;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",based_EXPORTS,ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","$(inherited)");
+				INSTALL_PATH = "@rpath";
+				LIBRARY_STYLE = DYNAMIC;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "   -fPIC '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -dynamiclib -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/lib/libcurl.dylib","-lz","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libssl.a","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libcrypto.a","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = based;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		40F7CE376C25431A9B329265 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = arm64;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				SDKROOT = iphoneos;
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios/build";
+			};
+			name = MinSizeRel;
+		};
+		5D23B4247F4842B28B482DDF /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .dylib;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",based_EXPORTS,ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","$(inherited)");
+				INSTALL_PATH = "@rpath";
+				LIBRARY_STYLE = DYNAMIC;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG -fPIC '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -dynamiclib -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/lib/libcurl.dylib","-lz","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libssl.a","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libcrypto.a","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = based;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		7011994F191E40B9A49ABCC7 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		7063C0F3693C4973B800943E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = arm64;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				SDKROOT = iphoneos;
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios/build";
+			};
+			name = Release;
+		};
+		799C040BF2CC423FAD9A109B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		7ACCD362414F4D8D8A639E29 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				AD_HOC_CODE_SIGNING_ALLOWED = YES;
+				ARCHS = arm64;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				SDKROOT = iphoneos;
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios/build";
+			};
+			name = Debug;
+		};
+		7B7B1E827D1346318B343A90 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		8D082FD70191444BAEC918D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_PREFIX = lib;
+				EXECUTABLE_SUFFIX = .dylib;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",based_EXPORTS,ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","$(inherited)");
+				INSTALL_PATH = "@rpath";
+				LIBRARY_STYLE = DYNAMIC;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG -fPIC '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -dynamiclib -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/lib/libcurl.dylib","-lz","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libssl.a","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/lib/ios/libcrypto.a","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = based;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		947A4CF1081148FA949A3E39 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		9CEDB37E8E3042E6ABC664D3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","/Users/francesco/saulx/based/packages/cpp-client/src","$(inherited)");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/build_ios/Debug${EFFECTIVE_PLATFORM_NAME}","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "   '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/build_ios/Debug${EFFECTIVE_PLATFORM_NAME}/libbased.dylib","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "linked-example";
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		CE821A6A406A4E85963D5B3E /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","/Users/francesco/saulx/based/packages/cpp-client/src","$(inherited)");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/build_ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/build_ios/RelWithDebInfo${EFFECTIVE_PLATFORM_NAME}/libbased.dylib","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "linked-example";
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = RelWithDebInfo;
+		};
+		D569D4C38D6D4BB4BFAE034E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		E36BAD093232401EAA32609B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		EA9BDB8E8F3E450D96288DB2 /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'",ASIO_STANDALONE,_WEBSOCKETPP_CPP11_STL_,BASED_TLS,"$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/lib/curl/artifacts/include","/Users/francesco/saulx/based/packages/cpp-client/lib/websocketpp","/Users/francesco/saulx/based/packages/cpp-client/lib/zlib","/Users/francesco/saulx/based/packages/cpp-client/lib/nlohmann-json","/Users/francesco/saulx/based/packages/cpp-client/lib/apply-patch","/Users/francesco/saulx/based/packages/cpp-client/lib/asio/asio/include","/Users/francesco/saulx/based/packages/cpp-client/prebuilt-libs/openssl/include","/Users/francesco/saulx/based/packages/cpp-client/src","$(inherited)");
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = ("/Users/francesco/saulx/based/packages/cpp-client/build_ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}","$(inherited)");
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++11' ";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","/Users/francesco/saulx/based/packages/cpp-client/build_ios/MinSizeRel${EFFECTIVE_PLATFORM_NAME}/libbased.dylib","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "linked-example";
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = MinSizeRel;
+		};
+		ECDDE699E2404D05926BBC16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/francesco/saulx/based/packages/cpp-client/build_ios";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		16F939CD6DC74AD09360EFC3 /* Build configuration list for PBXNativeTarget "linked-example" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9CEDB37E8E3042E6ABC664D3 /* Debug */,
+				2EBE00B793F44FF7A25498DE /* Release */,
+				EA9BDB8E8F3E450D96288DB2 /* MinSizeRel */,
+				CE821A6A406A4E85963D5B3E /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		2506277E675B4C8797578D4E /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECDDE699E2404D05926BBC16 /* Debug */,
+				799C040BF2CC423FAD9A109B /* Release */,
+				7011994F191E40B9A49ABCC7 /* MinSizeRel */,
+				2077C17BABA441988B4C8287 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3B48A4AF20F249528F9C995E /* Build configuration list for PBXProject "universal-based" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7ACCD362414F4D8D8A639E29 /* Debug */,
+				7063C0F3693C4973B800943E /* Release */,
+				40F7CE376C25431A9B329265 /* MinSizeRel */,
+				0A012FC589784E0291352755 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3F8EEF569B0F467BB36B5162 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E36BAD093232401EAA32609B /* Debug */,
+				D569D4C38D6D4BB4BFAE034E /* Release */,
+				947A4CF1081148FA949A3E39 /* MinSizeRel */,
+				7B7B1E827D1346318B343A90 /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DA13844C67F44D63993F1CF3 /* Build configuration list for PBXNativeTarget "based" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				37AF362F9A694F9BA62C329D /* Debug */,
+				8D082FD70191444BAEC918D4 /* Release */,
+				5D23B4247F4842B28B482DDF /* MinSizeRel */,
+				22E07BF945534E29AB43090E /* RelWithDebInfo */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D90C8F0F685E4A7BA7D8D4E0 /* Project object */;
+}

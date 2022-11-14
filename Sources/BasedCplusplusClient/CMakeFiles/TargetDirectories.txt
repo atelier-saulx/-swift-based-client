@@ -1,0 +1,4 @@
+/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/based.dir
+/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/linked-example.dir
+/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/ALL_BUILD.dir
+/Users/francesco/saulx/based/packages/cpp-client/build_ios/CMakeFiles/ZERO_CHECK.dir

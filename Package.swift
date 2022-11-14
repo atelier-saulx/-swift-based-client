@@ -6,16 +6,25 @@ import PackageDescription
 let package = Package(
     name: "swift-based-client",
     platforms: [
-        .iOS(.v13), .macOS(.v10_15),
+        .iOS(.v15), .macOS(.v12),
     ],
     products: [
         .library(
             name: "BasedClient",
-            targets: ["BasedClient"]),
+            targets: ["BasedClient"])
     ],
     dependencies: [
+        
     ],
     targets: [
+        .binaryTarget(name: "Based", path: "Sources/BasedCplusplusClient/based.zip"),
+        .target(
+            name: "BasedOBJCWrapper",
+            dependencies: [
+                .target(name: "Based")
+            ],
+            path: "Sources/BasedOBJCWrapper"
+        ),
         .target(
             name: "NakedJson"
         ),
@@ -28,6 +37,7 @@ let package = Package(
         .target(
             name: "BasedClient",
             dependencies: [
+                .target(name: "BasedOBJCWrapper"),
                 .target(name: "NakedJson"),
             ]
         ),
@@ -35,8 +45,9 @@ let package = Package(
             name: "BasedClientTests",
             dependencies: [
                 "BasedClient",
+                .target(name: "BasedOBJCWrapper"),
                 .target(name: "NakedJson"),
             ]
-        ),
+        )
     ]
 )

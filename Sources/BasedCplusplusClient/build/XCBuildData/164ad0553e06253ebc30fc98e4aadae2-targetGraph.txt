@@ -1,0 +1,11 @@
+Target dependency graph (4 targets)
+ZERO_CHECK in universal-based, no dependencies
+based in universal-based, depends on:
+ZERO_CHECK in universal-based (explicit)
+linked-example in universal-based, depends on:
+ZERO_CHECK in universal-based (explicit)
+based in universal-based (explicit)
+ALL_BUILD in universal-based, depends on:
+linked-example in universal-based (explicit)
+ZERO_CHECK in universal-based (explicit)
+based in universal-based (explicit)
