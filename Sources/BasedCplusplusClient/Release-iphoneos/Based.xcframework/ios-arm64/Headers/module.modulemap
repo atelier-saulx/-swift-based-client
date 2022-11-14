@@ -1,4 +1,0 @@
-module Based {
-    header "based.hpp"
-    export *
-}

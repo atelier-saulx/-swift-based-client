@@ -81,6 +81,7 @@ public final class Based {
         emitter: Emitter,
         messages: Messages
     ) {
+        
         self.config = config
         self.socket = ws
         self.emitter = emitter
