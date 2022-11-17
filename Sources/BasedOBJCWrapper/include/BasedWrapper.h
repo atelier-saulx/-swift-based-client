@@ -46,6 +46,9 @@ NS_SWIFT_NAME(observe(clientId:name:payload:callback:));
 + (void)unobserve: (BasedClientID)clientId andSubId: (int)subId
 NS_SWIFT_NAME(unobserve(clientId:subscriptionId:));
 
+
++ (void)auth2:(BasedClientID)clientId withName:(NSString *)token completion:(void (^)(NSString*))completion;
+
 @end
 
 NS_ASSUME_NONNULL_END

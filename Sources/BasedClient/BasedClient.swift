@@ -8,41 +8,90 @@
 import Foundation
 @_exported import BasedOBJCWrapper
 
-public typealias BasedClientId = Int32
+protocol BasedClientProtocol {
+    func createClient() -> BasedClientId
+    func connect(clientId: BasedClientId, urlString: String)
+    func connect(
+        clientId: BasedClientId,
+        cluster: String,
+        org: String,
+        project: String,
+        env: String,
+        name: String,
+        key: String,
+        optionalKey: Bool
+    )
+    func deleteClient(clientId: BasedClientId)
+    func auth(clientId: BasedClientId, token: String) async -> String?
+}
 
-public struct BasedClient {
-    
-    private let clientId = BasedWrapper.basedClient()
-    public static let clusterUrl = "https://d15p61sp2f2oaj.cloudfront.net/"
-    
-    public init() {}
-    
-    public func deleteClient(clientId: BasedClientId) {
-        BasedWrapper.deleteClient(clientId)
+extension BasedClientProtocol {
+    func createClient() -> BasedClientId {
+        BasedWrapper.basedClient()
     }
     
-    public func connect(with url: String) {
-        BasedWrapper.connect(clientId: clientId, url: url)
+    func connect(clientId: BasedClientId, urlString: String) {
+        BasedWrapper.connect(clientId: clientId, url: urlString)
     }
     
-    public func connect(
-        cluster: String = Self.clusterUrl,
+    func connect(
+        clientId: BasedClientId,
+        cluster: String = "https://d15p61sp2f2oaj.cloudfront.net/",
         org: String,
         project: String,
         env: String,
         name: String = "@based/edge",
-        key: String = "",
+        key: String,
         optionalKey: Bool = false
     ) {
         BasedWrapper.connect(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey)
     }
-
     
-    public func auth(token: String) {
-            
-        BasedWrapper.auth(clientId: clientId, token: "s") { [clientId] chars in
-            print(chars)
+    func deleteClient(clientId: BasedClientId) {
+        BasedWrapper.deleteClient(clientId)
+    }
+    
+    func auth(clientId: BasedClientId, token: String) async -> String? {
+        
+//        return await withCheckedContinuation { continuation in
+//            BasedWrapper.auth(clientId: clientId, token: token) { chars in
+//                let string = String(cString: chars, encoding: .utf8)
+//                continuation.resume(returning: string)
+//            }
+//        }
+        return nil
+    }
+    
+    func f() async -> String {
+        return await withCheckedContinuation { continuation in
+            BasedWrapper.auth2(1, withName: "") { string in
+                continuation.resume(returning: string)
+            }
         }
     }
+    
+}
+
+//func bridge<T : AnyObject>(obj : T) -> UnsafeRawPointer {
+//    return UnsafeRawPointer(Unmanaged.passUnretained(obj).toOpaque())
+//}
+//
+//func bridge<T : AnyObject>(ptr : UnsafeRawPointer) -> T {
+//    return Unmanaged<T>.fromOpaque(ptr).takeUnretainedValue()
+//}
+//
+//func bridgeRetained<T : AnyObject>(obj : T) -> UnsafeRawPointer {
+//    return UnsafeRawPointer(Unmanaged.passRetained(obj).toOpaque())
+//}
+//
+//func bridgeTransfer<T : AnyObject>(ptr : UnsafeRawPointer) -> T {
+//    return Unmanaged<T>.fromOpaque(ptr).takeRetainedValue()
+//}
+
+public typealias BasedClientId = Int32
+
+public struct BasedClient: BasedClientProtocol {
+    
+
 
 }

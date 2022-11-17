@@ -9,6 +9,16 @@
 #import "BasedWrapper.h"
 #import "Based.hpp"
 
+void ccall(void* userData, void (*callback)(void* userData, const char *)) {
+    callback(userData, "Hello");
+}
+
+static void ccallback(void* userData, const char* s) {
+    NSString* ns = [NSString stringWithUTF8String:s];
+//    void (^completion)(NSString*) = (__bridge void (^)(NSString*))userData;
+    void (^completion)(NSString*) = (void (^)(NSString*))CFBridgingRelease(userData);
+    completion(ns);
+}
 
 @interface BasedWrapper ()
 
@@ -16,6 +26,20 @@
 
 
 @implementation BasedWrapper
+
+//+ (void)auth:(BasedClientID)clientId withName:(NSString *)token completion:(void (^)(NSString*))completion {
+//    ccall((void*)CFBridgingRetain(completion), [](void* userData, const char* s) {
+//        auto completion = (void (^)(NSString*))CFBridgingRelease(userData);
+//        auto ns = [NSString stringWithUTF8String:s];
+//        completion(ns);
+//    });
+//}
+//    
+    
++ (void)auth2:(BasedClientID)clientId withName:(NSString *)token completion:(void (^)(NSString*))completion {
+//    ccall((__bridge void *)completion, ccallback); // 🐞 see Edited below
+    ccall((void*)CFBridgingRetain(completion), ccallback);
+}
 
 + (BasedClientID) basedClient {
     int clientId = Based__new_client();
