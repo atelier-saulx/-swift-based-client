@@ -14,10 +14,6 @@ extension Based {
         try await withCheckedThrowingContinuation { [decoder] continuation in
             Task {
                 await addGetSubscriber(payload: payload, onData: { data, checksum in
-                    guard let data = data as? Data else {
-                        continuation.resume(throwing: BasedError.other(message: "Could not decode to \(T.self)"))
-                        return
-                    }
                     do {
                         let model = try decoder.decode(T.self, from: data)
                         continuation.resume(returning: model)
@@ -73,13 +69,15 @@ extension Based {
                 }
             } else if let cache = cache {
                 await onData(cache.value, cache.checksum)
-            } else {
-                await subscriptionManager
-                    .addSubscriber(
-                        for: finalSubscriptionId,
-                        and: SubscriptionCallback(onError: onError, onData: onData)
-                    )
             }
+            
+            //always overwrite to avoid reentry withCheckedThrowingContinuation
+            await subscriptionManager
+                .addSubscriber(
+                    for: finalSubscriptionId,
+                    and: SubscriptionCallback(onError: onError, onData: onData)
+                )
+            
         } else {
             subscription = SubscriptionModel(
                 payload: payload,

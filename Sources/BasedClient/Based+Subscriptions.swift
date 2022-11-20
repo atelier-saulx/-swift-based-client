@@ -317,11 +317,8 @@ extension Based {
             await self.cache.store(data.id, data: (data.data, data.checksum ?? 0))
             
             for (subscriberId, callback) in subscription.subscribers {
-                if callback.onData == nil {
-                    await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
-                } else {
-                    await callback.onData?(data.data, data.checksum ?? 0)
-                }
+                await callback.onData?(data.data, data.checksum ?? 0)
+                await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
             }
             
         }
@@ -383,6 +380,7 @@ extension Based {
                     }
                     if let checksum = cache?.checksum, let value = cache?.value {
                         await callback.onData?(value, checksum)
+                        await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                     }
                 }
             } else {
