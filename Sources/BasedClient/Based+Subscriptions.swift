@@ -287,6 +287,7 @@ extension Based {
                     await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                 } else {
                     await callback.onError?(err)
+                    await removeSubscriber(subscriptionId: data.id, subscriberId: subscriberId)
                 }
             }
             
