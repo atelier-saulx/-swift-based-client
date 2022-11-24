@@ -79,9 +79,10 @@ final class Uploader: NSObject {
                         subject.send(completion: .failure(error))
                         return
                     }
-                    if let data = data, let res = try? JSONDecoder().decode([String: String].self, from: data) {
-                        subject.send(.uploaded(id: res["id"]))
-                    }
+//                    if let data = data, let res = try? JSONDecoder().decode([String: String].self, from: data) {
+//                        subject.send(.uploaded(id: res["id"]))
+//                    }
+                    subject.send(.uploaded(id: upload.id))
                     subject.send(completion: .finished)
                     removeSubject?()
                 }
@@ -95,9 +96,10 @@ final class Uploader: NSObject {
                         subject.send(completion: .failure(error))
                         return
                     }
-                    if let data = data, let res = try? JSONDecoder().decode([String: String].self, from: data) {
-                        subject.send(.uploaded(id: res["id"]))
-                    }
+//                    if let data = data, let res = try? JSONDecoder().decode([String: String].self, from: data) {
+//                        subject.send(.uploaded(id: res["id"]))
+//                    }
+                    subject.send(.uploaded(id: upload.id))
                     subject.send(completion: .finished)
                     removeSubject?()
                 }
