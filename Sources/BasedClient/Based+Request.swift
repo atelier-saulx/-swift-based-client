@@ -8,9 +8,31 @@
 import Foundation
 import NakedJson
 
+typealias RequestId = Int
+typealias RequestCallbacks = Dictionary<RequestId, RequestCallback>
+
 struct RequestCallback {
     let resolve: (Data) -> Void
     let reject: (Error) -> Void
+}
+
+var requestIdCnt: Int = 0
+
+actor Callbacks {
+    var requestIdCnt: Int = 0
+    var requestCallbacks = RequestCallbacks()
+    
+    func addCallback(cb: RequestCallback, with id: RequestId) {
+        requestCallbacks[id] = cb
+    }
+    
+    func fetchCallback(with id: RequestId) -> RequestCallback? {
+        requestCallbacks[id]
+    }
+    
+    func removeCallback(with id: RequestId) {
+        requestCallbacks.removeValue(forKey: id)
+    }
 }
 
 extension Based {
@@ -25,7 +47,10 @@ extension Based {
         let id = requestIdCnt
         
         let cb = RequestCallback(resolve: { continuation.resume(returning: $0) }, reject: continuation.resume(throwing:))
-        requestCallbacks[id] = cb
+        
+        Task {
+            await callbacks.addCallback(cb: cb, with: id)
+        }
 
         if (type == .call) {
             addToMessages(FunctionCallMessage(id: id, name: name, payload: payload))
@@ -35,16 +60,16 @@ extension Based {
     }
     
     
-    func incomingRequest(_ data: [Json]) {
+    func incomingRequest(_ data: [Json]) async {
         dataInfo("\(data)")
         
         guard
             let id = data[1].intValue,
-            let cb = requestCallbacks[id],
+            let cb = await callbacks.fetchCallback(with: id),
             let jsonData = try? encoder.encode(data[2])
         else { dataInfo("No id for data message"); return }
         
-        requestCallbacks.removeValue(forKey: id)
+        await callbacks.removeCallback(with: id)
         
         guard data.count <= 3 else {
             if

@@ -60,10 +60,7 @@ public final class Based {
     
     var auth: [AuthFunction] = []
     
-    typealias RequestId = Int
-    typealias RequestCallbacks = Dictionary<RequestId, RequestCallback>
-    var requestIdCnt: Int = 0
-    var requestCallbacks = RequestCallbacks()
+    var callbacks = Callbacks()
     
     public required convenience init(opts: Opts) {
         let urlSessionConfig = URLSessionConfiguration.default
@@ -160,7 +157,9 @@ extension Based: BasedWebSocketDelegate {
                 beingAuth = false
                 auth = []
             case .set?, .get?, .configuration?, .getConfiguration?, .call?, .delete?, .copy?, .digest?:
-                incomingRequest(dataMessage)
+                Task {
+                    await incomingRequest(dataMessage)
+                }
             case .subscription?:
                 //ex: [1,-1725702994954,{\"$isNull\":true},3391353116945]
                 if
