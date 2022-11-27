@@ -127,12 +127,10 @@ extension Based {
         name: String?
     ) async -> (subscriptionId: SubscriptionId, subscriberId: SubscriberId) {
         
-//        let finalSubscriptionId =
-//            subscriptionId
-//            ??
-//            self.generateSubscriptionId(payload: payload, name: name)
-        
-        let finalSubscriptionId = Int(Int32.random(in: 0...Int32.max))
+        let finalSubscriptionId =
+            subscriptionId
+            ??
+            self.generateSubscriptionId(payload: payload, name: name)
         
         var subscription = await subscriptionManager.subscription(with: finalSubscriptionId)
         

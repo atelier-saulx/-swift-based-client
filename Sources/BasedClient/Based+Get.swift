@@ -47,10 +47,12 @@ extension Based {
         name: String?
     ) async {
         
-        let finalSubscriptionId =
-            subscriptionId
-            ??
-            self.generateSubscriptionId(payload: payload, name: name)
+//        let finalSubscriptionId =
+//            subscriptionId
+//            ??
+//            self.generateSubscriptionId(payload: payload, name: name)
+        
+        let finalSubscriptionId = Int(Int32.random(in: 0...Int32.max))
 
         let cache = await cache.fetch(with: finalSubscriptionId)
         var subscription = await subscriptionManager.subscription(with: finalSubscriptionId)
