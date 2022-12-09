@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BasedWrapper.h"
-#import "Based.hpp"
+#import "Based.h"
 
 void ccall(void* userData, void (*callback)(void* userData, const char *)) {
     callback(userData, "Hello");

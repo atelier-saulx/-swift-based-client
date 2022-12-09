@@ -20,8 +20,7 @@ extension Client {
         based: Based(opts: Based.Opts(env: "_ENV_", project: "_PRJ_", org: "_ORG_")),
         configure: {
             
-//            let client = BasedClient()
-//            client.connect(org: "airhub", project: "airhub", env: "edge")
+            let client = BasedClient()
             
             
             let result = try? await Current.client.based

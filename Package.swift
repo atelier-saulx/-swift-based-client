@@ -11,13 +11,16 @@ let package = Package(
     products: [
         .library(
             name: "BasedClient",
+            type: .dynamic,
             targets: ["BasedClient"])
     ],
     dependencies: [
         
     ],
     targets: [
-        .binaryTarget(name: "Based", path: "Sources/BasedCplusplusClient/based.zip"),
+        .binaryTarget(
+            name: "Based",
+            path: "Sources/BasedCplusplusClient/Based.xcframework"),
         .target(
             name: "BasedOBJCWrapper",
             dependencies: [
