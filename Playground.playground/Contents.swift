@@ -8,4 +8,12 @@ func djb2(_ key: String, _ inputHash: Int32 = 5381) -> Int32 {
     return value
 }
 
-print(djb2("__len:31"))
+
+let data = "true".data(using: .utf8)!
+
+func decode<T: Decodable>(data: Data) -> T {
+    let value = try! JSONDecoder().decode(T.self, from: data)
+    return value
+}
+let result: Bool = decode(data: data)
+print(result)

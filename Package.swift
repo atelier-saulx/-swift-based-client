@@ -14,9 +14,6 @@ let package = Package(
             type: .dynamic,
             targets: ["BasedClient"])
     ],
-    dependencies: [
-        
-    ],
     targets: [
         .binaryTarget(
             name: "Based",
@@ -52,5 +49,6 @@ let package = Package(
                 .target(name: "NakedJson"),
             ]
         )
-    ]
+    ],
+    cxxLanguageStandard: .gnucxx20
 )

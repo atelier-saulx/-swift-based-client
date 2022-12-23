@@ -12,4 +12,5 @@ var Current = Environment()
 struct Environment {
     var patcher: Patcher = .default
     var hasher: Hasher = .default
+    var basedClientWrapper: BasedClientWrapper = .default
 }
