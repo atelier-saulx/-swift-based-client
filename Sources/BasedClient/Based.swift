@@ -65,21 +65,13 @@ public final class Based {
     var requestIdCnt: Int = 0
     var requestCallbacks = RequestCallbacks()
     
-    //because of limitations with interopting with the C client, now only 1 Based client is supported
-    static var client = BasedClient()
-    
     var t: Task<(), Never>?
     public required convenience init(opts: Opts) {
         //opts.org etc
-        Self.client.connect(org: "airhub", project: "airhub", env: "edge")
-        Self.client.auth(token: "token") { data in
+        Current.basedClient.connect(org: "airhub", project: "airhub", env: "edge")
+        Current.basedClient.auth(token: "token") { data in
             print("rerturn")
         }
-        Self.client.get(name: "counter", payload: "") { data, error in
-            print(data, error)
-        }
-        
-
         
         let urlSessionConfig = URLSessionConfiguration.default
         urlSessionConfig.waitsForConnectivity = true
@@ -89,18 +81,18 @@ public final class Based {
         let config = BasedConfig(opts: opts, urlSession: session)
         self.init(config: config, ws: BasedWebSocket(), emitter: Emitter(), messages: Messages())
         
-        t = Task {
-            await Self.client.observe(name: "counter", payload: "") { data, checksum, error, id  in
-                print("one ", data)
-            }
-            
-            await Self.client.observe(name: "counter", payload: "") { data, checksum, error, id  in
-                print("tow ", data)
+        Task {
+            await Current.basedClient.get(name: "counter", payload: "") { data, error in
+                print(data, error)
             }
         }
         
-        
-        sleep(5)
+        t = Task {
+            let id = await Current.basedClient.observe(name: "counter", payload: "") { data, checksum, error, id  in
+                print("one ", data)
+            }
+            //await Current.basedClient.unobserve(observeId: id)
+        }
     }
     
     internal init(

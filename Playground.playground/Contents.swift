@@ -16,4 +16,21 @@ func decode<T: Decodable>(data: Data) -> T {
     return value
 }
 let result: Bool = decode(data: data)
-print(result)
+//print(result)
+
+
+func makeCString(from str: String) -> UnsafeMutablePointer<CChar> {
+    let count = str.utf8.count + 1
+    let result = UnsafeMutablePointer<CChar>.allocate(capacity: count)
+    str.withCString { baseAddress in
+        result.initialize(from: baseAddress, count: count)
+    }
+    return result
+}
+
+let res = makeCString(from: "{\"test\":0}")
+let str = String(cString: res)
+print(str)
+print(res.pointee)
+print(res[0])
+res.deallocate()

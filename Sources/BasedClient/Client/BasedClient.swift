@@ -8,27 +8,57 @@
 import Foundation
 @_exported import BasedOBJCWrapper
 
-/// Internal types
+/// /// Client id returned from a Based C++ Client
+typealias BasedClientId = CInt
 /// Callback id present in get callbacks and function callbacks
-typealias CallbackId = Int32
+typealias CallbackId = CInt
 /// Observe id present in subscription callbacks
-typealias ObserveId = Int32
+typealias ObserveId = CInt
 /// Get or Function callback
-typealias Callback = (_ data: String, _ error: String) -> ()
+typealias Callback = @Sendable (_ data: String, _ error: String) -> ()
 /// Observe callback
-typealias ObserveCallback = (_ data: String, _ checksum: UInt64, _ error: String, _ observeId: ObserveId) -> ()
+typealias ObserveCallback = @Sendable (_ data: String, _ checksum: UInt64, _ error: String, _ observeId: ObserveId) -> ()
 /// Auth callback
-typealias AuthCallback = (_ data: String) -> ()
+typealias AuthCallback = @Sendable (_ data: String) -> ()
 
-/// Safe observe callback store
-actor ObserveCallbacks {
-    var callbacks: [ObserveId: ObserveCallback] = [:]
-    func add(callback: @escaping ObserveCallback, id: ObserveId) {
+
+actor CallbacksStore<K: Hashable, V: Sendable> {
+    private var callbacks: [K: V] = [:]
+    func add(callback: V, id: K) {
         callbacks[id] = callback
     }
-    func fetch(id: ObserveId) -> ObserveCallback? {
+    func fetch(id: K) -> V? {
         callbacks[id]
     }
+    func remove(id: K) {
+        callbacks.removeValue(forKey: id)
+    }
+    func perform(_ closure: @escaping (K, V) -> ()) {
+        callbacks.forEach { (key: K, value: V) in
+            closure(key, value)
+        }
+    }
+    func count() -> Int {
+        callbacks.count
+    }
+}
+
+/// Observe callback store
+@globalActor
+actor ObserveCallbacks {
+    static var shared: CallbacksStore<ObserveId, ObserveCallback> = .init()
+}
+
+/// Get callback store
+@globalActor
+actor GetCallbacks {
+    static var shared: CallbacksStore<CallbackId, Callback> = .init()
+}
+
+/// Get callback store
+@globalActor
+actor FunctionCallbacks {
+    static var shared: CallbacksStore<CallbackId, Callback> = .init()
 }
 
 /// Because C funciton pointers cannot have context it is needed to handle all callbacks first global, it is guaranteed that the char pointers will always point to a String which
@@ -51,45 +81,42 @@ enum HandlerType {
 //    }
 //}
 /// Callback for auth
-func handleAuth(data: UnsafePointer<CChar>) {
+private func handleAuthCallback(data: UnsafePointer<CChar>) {
     let dataString = String(cString: data)
     dataInfo("AUTH DATA:: \(dataString)")
     guard dataString.isEmpty == false else { return }
-    Based.client.callbackHandler(with: .auth(data: dataString))
+    Current.basedClient.callbackHandler(with: .auth(data: dataString))
 }
 
 /// Callback get handler
 /// Dealing with c pointer functions forces a global approach
-func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: Int32) {
+private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     dataInfo("GET DATA:: \(dataString), ERROR:: \(errorString)")
-    Based.client.callbackHandler(with: .get(id: subscriptionId, data: dataString, error: errorString))
+    Current.basedClient.callbackHandler(with: .get(id: subscriptionId, data: dataString, error: errorString))
 }
 
 /// Callback function handler
-func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: Int32) {
+private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     dataInfo("FUNC DATA:: \(dataString), ERROR:: \(errorString)")
-    Based.client.callbackHandler(with: .function(id: subscriptionId, data: dataString, error: errorString))
+    Current.basedClient.callbackHandler(with: .function(id: subscriptionId, data: dataString, error: errorString))
 }
 
 /// Observe callback handler
-func handleObservableCallback(data: UnsafePointer<CChar>, checksum: UInt64, error: UnsafePointer<CChar>, observeId: Int32) {
+private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64, error: UnsafePointer<CChar>, observeId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     dataInfo("OBSERVE DATA:: \(dataString), ERROR:: \(errorString)")
-    Based.client.callbackHandler(with: .observe(id: observeId, data: dataString, checksum: checksum, error: errorString))
+    Current.basedClient.callbackHandler(with: .observe(id: observeId, data: dataString, checksum: checksum, error: errorString))
 }
 
 extension BasedClientProtocol {
-    static func createClient() -> BasedClientId {
-        Current.basedClientWrapper.createClient()
-    }
     
     func connect(urlString: String) {
-        Current.basedClientWrapper.connectUrl(clientId, urlString)
+        basedCClient.connect(clientId: clientId, url: urlString)
     }
     
     func connect(
@@ -101,54 +128,77 @@ extension BasedClientProtocol {
         key: String = "",
         optionalKey: Bool = false
     ) {
-        Current.basedClientWrapper.connect(clientId, cluster, org, project, env, name, key, optionalKey)
+        basedCClient.connect(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey)
     }
     
     func disconnect() {
-        Current.basedClientWrapper.disconnect(clientId)
+        basedCClient.disconnect(clientId: clientId)
     }
     
     func deleteClient() {
-        Current.basedClientWrapper.deleteClient(clientId)
+        basedCClient.delete(clientId)
     }
-    
-    func unobserve(observeId: Int32) {
-        Current.basedClientWrapper.unobserve(clientId, observeId)
-    }
-    
 }
 
-public class BasedClient: BasedClientProtocol {
-    
+final class BasedClient: BasedClientProtocol {
+
     var authCallback: AuthCallback?
-    var callbacks: [Int32: Callback] = [:]
-    var observeCallbacks: ObserveCallbacks = ObserveCallbacks()
-    var functions: [Int32: Callback] = [:]
+    var getCallbacks: GetCallbackStore
+    var observeCallbacks: ObserveCallbackStore
+    var functionCallbacks: FunctionCallbackStore
     
+    var basedCClient: BasedCClientProtocol
+    
+    /// 32 bit integer representing the id of the c++ client
     var clientId: BasedClientId
     
-    init() {
-        clientId = Self.createClient()
+    required init(
+        cClient: BasedCClientProtocol = BasedCClient(),
+        observeCallbacks: ObserveCallbackStore = ObserveCallbacks.shared,
+        getCallbacks: GetCallbackStore = GetCallbacks.shared,
+        functionCallbacks: FunctionCallbackStore = FunctionCallbacks.shared
+    ) {
+        self.basedCClient = cClient
+        self.observeCallbacks = observeCallbacks
+        self.getCallbacks = getCallbacks
+        self.functionCallbacks = functionCallbacks
+        clientId = basedCClient.create()
+    }
+    
+    deinit {
+        Task { [weak self] in
+            guard let self = self else { return }
+            await observeCallbacks.perform { id, callback in
+                self.basedCClient.unobserve(clientId: self.clientId, subscriptionId: id)
+            }
+            self.basedCClient.delete(clientId)
+        }
     }
     
     func auth(token: String, callback: @escaping AuthCallback) {
         authCallback = callback
-        Current.basedClientWrapper.auth(clientId, token)
+        basedCClient.auth(clientId: clientId, token: token, callback: handleAuthCallback)
     }
     
-    func get(name: String, payload: String, callback: @escaping Callback) {
-        let id = Current.basedClientWrapper.get(clientId, name, payload)
-        callbacks[id] = callback
+    func get(name: String, payload: String, callback: @escaping Callback) async {
+        let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
+        await getCallbacks.add(callback: callback, id: id)
     }
     
-    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async {
-        let id = Current.basedClientWrapper.observe(clientId, name, payload)
+    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> CInt {
+        let id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
         await observeCallbacks.add(callback: callback, id: id)
+        return id
     }
     
-    func function(name: String, payload: String, callback: @escaping Callback) {
-        let id = Current.basedClientWrapper.function(clientId, name, payload)
-        functions[id] = callback
+    func unobserve(observeId: CInt) async {
+        basedCClient.unobserve(clientId: clientId, subscriptionId: observeId)
+        await observeCallbacks.remove(id: observeId)
+    }
+    
+    func function(name: String, payload: String, callback: @escaping Callback) async {
+        let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
+        await functionCallbacks.add(callback: callback, id: id)
     }
     
     func callbackHandler(with type: HandlerType) {
@@ -157,14 +207,39 @@ public class BasedClient: BasedClientProtocol {
             authCallback?(data)
             authCallback = nil
         case let .function(id, data, error):
-            functions[id]?(data, error)
-            functions.removeValue(forKey: id)
+            Task { await callFunction(id: id, data: data, error: error) }
         case let .get(id, data, error):
-            callbacks[id]?(data, error)
-            callbacks.removeValue(forKey: id)
+            Task { await callGet(id: id, data: data, error: error) }
         case let .observe(id, data, checksum, error):
-            Task { [weak self] in await self?.observeCallbacks.fetch(id: id)?(data, checksum, error, id) }
+            Task { await callObserve(id: id, data: data, checksum: checksum, error: error) }
         }
     }
     
+    @ObserveCallbacks
+    private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
+        Task {
+            await observeCallbacks.fetch(id: id)?(data, checksum, error, id)
+        }
+    }
+    
+    @FunctionCallbacks
+    private func callFunction(id: CallbackId, data: String, error: String) {
+        Task {
+            await functionCallbacks.fetch(id: id)?(data, error)
+            await functionCallbacks.remove(id: id)
+        }
+    }
+    
+    @GetCallbacks
+    private func callGet(id: CallbackId, data: String, error: String) {
+        Task {
+            await getCallbacks.fetch(id: id)?(data, error)
+            await getCallbacks.remove(id: id)
+        }
+    }
+    
+}
+
+extension BasedClient {
+    static let `default`: BasedClient = .init()
 }

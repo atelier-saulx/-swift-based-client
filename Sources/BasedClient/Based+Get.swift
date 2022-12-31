@@ -10,6 +10,36 @@ import NakedJson
 
 extension Based {
     
+    public func __get<T: Decodable>(name: String, payload: Json = [:]) async throws -> T {
+        return try await withCheckedThrowingContinuation { [decoder] continuation in
+            Task {
+                await Current.basedClient.get(name: name, payload: "", callback: { data, error in
+                    guard
+                        error.isEmpty,
+                        let data = data.data(using: .utf8),
+                        let model = try? decoder.decode(T.self, from: data)
+                    else {
+                        continuation.resume(throwing: NSError(domain: "", code: -1))
+                        return
+                    }
+                            
+                    continuation.resume(returning: model)
+//                    if error.isEmpty {
+//                        do {
+//                            let data = data.data(using: .utf8)
+//                            let model = try decoder.decode(T.self, from: data!)
+//                            continuation.resume(returning: model)
+//                        } catch error {
+//                            continuation.resume(throwing: NSError(domain: "", code: -1))
+//                        }
+//                    } else {
+//                        continuation.resume(throwing: NSError(domain: "", code: -1))
+//                    }
+                })
+            }
+        }
+    }
+    
     public func get<T: Decodable>(name: String, payload: Json = [:]) async throws -> T {
         try await withCheckedThrowingContinuation { [decoder] continuation in
             Task {

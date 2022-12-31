@@ -6,6 +6,11 @@
 //
 
 import Foundation
+@_exported import BasedOBJCWrapper
+
+typealias ObserveCallbackStore = CallbacksStore<ObserveId, ObserveCallback>
+typealias GetCallbackStore = CallbacksStore<CallbackId, Callback>
+typealias FunctionCallbackStore = CallbacksStore<CallbackId, Callback>
 
 protocol BasedClientProtocol {
     /// Client Id
@@ -13,18 +18,16 @@ protocol BasedClientProtocol {
     /// Auth callbacks
     var authCallback: AuthCallback? { get set }
     /// Get callbacks
-    var callbacks: [CallbackId: Callback] { get set }
+    var getCallbacks: GetCallbackStore { get set }
     /// Observe callbacks
-    var observeCallbacks: ObserveCallbacks { get set }
+    var observeCallbacks: ObserveCallbackStore { get set }
     /// Function callbacks
-    var functions: [CallbackId: Callback] { get set }
-    
+    var functionCallbacks: FunctionCallbackStore { get set }
+    /// Based C client
+    var basedCClient: BasedCClientProtocol { get set }
+     
     /// Handles calback from c++ client
     func callbackHandler(with type: HandlerType)
-    
-    /// Creates a client
-    /// - Returns: A 32 bit integer representing the id of the c++ client
-    static func createClient() -> BasedClientId
     
     /// Connects a client to Based
     /// - Parameters: a String representing an url to connect with
@@ -61,24 +64,36 @@ protocol BasedClientProtocol {
     ///     - name: name of function
     ///     - payload: as a valid json string
     ///     - callback: called when server returns data
-    func get(name: String, payload: String, callback: @escaping Callback)
+    func get(name: String, payload: String, callback: @escaping Callback) async
     
     /// Observe
     ///  - parameters
     ///     - name: name of function
     ///     - payload: as a valid json string
     ///     - callback: callback that the observable will trigger.
-    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async
+    ///     - returns subscription id
+    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> CInt
     
     /// Unobserve
     ///  - parameters
     ///     - observeId: Id returned from calling observe
-    func unobserve(observeId: Int32)
+    func unobserve(observeId: CInt) async
     
-    /// Based function calls
+    /// Based client function calls
     ///  - parameters
     ///     - name: name of function
     ///     - payload: as a valid json string
     ///     - callback: called when server returns data
-    func `function`(name: String, payload: String, callback: @escaping Callback)
+    func `function`(name: String, payload: String, callback: @escaping Callback) async
+    
+    /// Based client init
+    ///  - parameters
+    ///     - cclient: C client conforming BasedCClientProtocol
+    ///     - observeCallbacks: Data structure for storing callbacks
+    init(
+        cClient: BasedCClientProtocol,
+        observeCallbacks: ObserveCallbackStore,
+        getCallbacks: GetCallbackStore,
+        functionCallbacks: FunctionCallbackStore
+    )
 }
