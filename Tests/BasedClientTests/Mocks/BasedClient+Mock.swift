@@ -9,10 +9,15 @@ import Foundation
 @testable import BasedClient
 
 extension BasedClient {
-    static let mock: (MockBasedCClient?, GetCallbackStore?) -> BasedClient = { mock, getCallbacks in
-        guard let mock = mock, let getCallbacks = getCallbacks else {
+    static let mock: (MockBasedCClient?, GetCallbackStore?, FunctionCallbackStore?, ObserveCallbackStore?) -> BasedClient = { mock, getCallbacks, funcCallbacks, observeCallbacks in
+        guard let mock = mock, let getCallbacks = getCallbacks, let funcCallbacks = funcCallbacks, let observeCallbacks = observeCallbacks else {
             return .init()
         }
-        return .init(cClient: mock, getCallbacks: getCallbacks )
+        return .init(
+            cClient: mock,
+            observeCallbacks: observeCallbacks,
+            getCallbacks: getCallbacks,
+            functionCallbacks: funcCallbacks
+        )
     }
 }

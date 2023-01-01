@@ -10,6 +10,6 @@ import Foundation
 
 extension Environment {
     static let mock: Environment = .init(
-        basedClient: .mock(nil, nil)
+        basedClient: .mock(nil, nil, nil, nil)
     )
 }

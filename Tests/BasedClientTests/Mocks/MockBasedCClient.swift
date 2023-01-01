@@ -38,16 +38,34 @@ class MockBasedCClient: BasedCClientProtocol {
         return id
     }
     
+    var funcCallbackParam: (data: UnsafeMutablePointer<CChar>, error: UnsafeMutablePointer<CChar>, subscriptionId: CInt)?
     func function(clientId: BasedClientID, name: String, payload: String, callback: @convention(c) (UnsafePointer<CChar>, UnsafePointer<CChar>, CInt) -> Void) -> CInt {
-        1
+        let data = (funcCallbackParam?.0)!
+        let error = (funcCallbackParam?.1)!
+        let id = (funcCallbackParam?.2)!
+        Task.detached {
+            try await Task.sleep(seconds: 0.5)
+            callback(data, error, id)
+        }
+        
+        return id
     }
     
     func service(clientId: BasedClientID, cluster: String, org: String, project: String, env: String, name: String, key: String, optionalKey: Bool) -> String {
         ""
     }
     
+    var observeCallbackParam: (data: UnsafeMutablePointer<CChar>, error: UnsafeMutablePointer<CChar>, subscriptionId: CInt)?
     func observe(clientId: BasedClientID, name: String, payload: String, callback: @convention(c) (UnsafePointer<CChar>, UInt64, UnsafePointer<CChar>, CInt) -> Void) -> CInt {
-        1
+        let data = (observeCallbackParam?.0)!
+        let error = (observeCallbackParam?.1)!
+        let id = (observeCallbackParam?.2)!
+        Task.detached {
+            try await Task.sleep(seconds: 0.5)
+            callback(data, 0, error, id)
+        }
+        
+        return id
     }
     
     func unobserve(clientId: BasedClientID, subscriptionId subId: CInt) {
