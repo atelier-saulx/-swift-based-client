@@ -30,7 +30,7 @@ protocol BasedClientProtocol {
     func callbackHandler(with type: HandlerType)
     
     /// Connects a client to Based
-    /// - Parameters: a String representing an url to connect with
+    /// - Parameters: String representing an url to connect with
     func connect(urlString: String)
     
     /// Connects a client with a set of params

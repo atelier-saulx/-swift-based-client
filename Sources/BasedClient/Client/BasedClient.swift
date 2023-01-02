@@ -15,33 +15,12 @@ typealias CallbackId = CInt
 /// Observe id present in subscription callbacks
 typealias ObserveId = CInt
 /// Get or Function callback
-typealias Callback = @Sendable (_ data: String, _ error: String) -> ()
+typealias Callback = @Sendable (_ data: String, _ error: String) throws -> ()
 /// Observe callback
 typealias ObserveCallback = @Sendable (_ data: String, _ checksum: UInt64, _ error: String, _ observeId: ObserveId) -> ()
 /// Auth callback
 typealias AuthCallback = @Sendable (_ data: String) -> ()
 
-
-actor CallbacksStore<K: Hashable, V: Sendable> {
-    private var callbacks: [K: V] = [:]
-    func add(callback: V, id: K) {
-        callbacks[id] = callback
-    }
-    func fetch(id: K) -> V? {
-        callbacks[id]
-    }
-    func remove(id: K) {
-        callbacks.removeValue(forKey: id)
-    }
-    func perform(_ closure: @escaping (K, V) -> ()) {
-        callbacks.forEach { (key: K, value: V) in
-            closure(key, value)
-        }
-    }
-    func count() -> Int {
-        callbacks.count
-    }
-}
 
 /// Observe callback store
 @globalActor
@@ -111,33 +90,6 @@ private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64,
     let errorString = String(cString: error)
     dataInfo("OBSERVE DATA:: \(dataString), ERROR:: \(errorString)")
     Current.basedClient.callbackHandler(with: .observe(id: observeId, data: dataString, checksum: checksum, error: errorString))
-}
-
-extension BasedClientProtocol {
-    
-    func connect(urlString: String) {
-        basedCClient.connect(clientId: clientId, url: urlString)
-    }
-    
-    func connect(
-        cluster: String = "https://d15p61sp2f2oaj.cloudfront.net/",
-        org: String,
-        project: String,
-        env: String,
-        name: String = "@based/edge",
-        key: String = "",
-        optionalKey: Bool = false
-    ) {
-        basedCClient.connect(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey)
-    }
-    
-    func disconnect() {
-        basedCClient.disconnect(clientId: clientId)
-    }
-    
-    func deleteClient() {
-        basedCClient.delete(clientId)
-    }
 }
 
 final class BasedClient: BasedClientProtocol {
