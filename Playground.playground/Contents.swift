@@ -1,4 +1,30 @@
 import Foundation
+import NakedJson
+
+struct Pet: Encodable {
+    let name: String
+}
+
+struct User: Encodable {
+    let id: Int
+    let name: String
+    let age: Double
+    let isMerried: Bool
+    var pet: Pet
+}
+
+let encoder = NakedJsonEncoder()
+let george = User(
+    id: 1,
+    name: "George",
+    age: 27.3,
+    isMerried: true,
+    pet: .init(name: "name")
+)
+
+let json = try encoder.encode(george)
+print(json.description)
+
 
 func djb2(_ key: String, _ inputHash: Int32 = 5381) -> Int32 {
     let scalarStrings = key.unicodeScalars.map { $0.value }
