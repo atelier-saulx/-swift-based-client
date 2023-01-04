@@ -10,15 +10,11 @@ import Foundation
 var Current: Environment = .default
 
 struct Environment {
-    var patcher: Patcher = .default
-    var hasher: Hasher = .default
     var basedClient: BasedClient = .default
 }
 
 extension Environment {
     static let `default`: Environment = .init(
-        patcher: .default,
-        hasher: .default,
         basedClient: .default
     )
 }

@@ -86,6 +86,25 @@ protocol BasedClientProtocol {
     ///     - callback: called when server returns data
     func `function`(name: String, payload: String, callback: @escaping Callback) async
     
+    /// Service
+    /// - Parameters:
+    ///     - cluster:
+    ///     - org:
+    ///     - project:
+    ///     - env:
+    ///     - name:
+    ///     - key:
+    ///     - optionalKey:
+    func service(
+        cluster: String,
+        org: String,
+        project: String,
+        env: String,
+        name: String,
+        key: String,
+        optionalKey: Bool
+    ) -> String
+    
     /// Based client init
     ///  - parameters
     ///     - cclient: C client conforming BasedCClientProtocol

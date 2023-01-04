@@ -158,22 +158,22 @@ extension Based {
     }
     
     private func _upload(options: UploadOptions) -> AnyPublisher<UploadStatus, Error> {
-        Just((options, token))
+        Just((options, "token"))
             .setFailureType(to: Error.self)
             .asyncMap { [weak self] args -> Upload in
-                let (options, token) = args
                 
-                guard let token = token else {
-                    throw BasedError.missingToken(message: "Token not found")
-                }
-                
-                guard let targetUrl = try await self?.getUrl(options: options) else {
-                    throw BasedError.noValidURL(message: "Could not construct target url for file upload")
+                guard
+                    let self = self,
+                    let targetUrl = URL(string: Current.basedClient.service(org: self.configuration.org, project: self.configuration.project, env: self.configuration.env))
+                else {
+                    throw BasedError.uploadError(message: "Could not create upload url")
                 }
             
+                let (options, token) = args
+                
                 var id = options.id
                 if id == nil {
-                    id = try await self?.set(query: .query(.field("type", "file")))
+                    id = try await self.set(query: .query(.field("type", "file")))
                 }
                 
                 return Upload(
@@ -192,20 +192,6 @@ extension Based {
             }.eraseToAnyPublisher()
     }
     
-    private func getUrl(options: UploadOptions) async throws -> URL {
-        if let targetUrl = options.targetUrl {
-            return targetUrl
-        } else {
-            let targetUrl = try await config.url
-            let urlString = targetUrl.absoluteString.replacingOccurrences(of: "ws", with: "http")
-            if config.opts.env == nil, let url = URL(string: "\(urlString)") {
-                return url
-            } else if let url = URL(string: "\(urlString)/file") {
-                return url
-            }
-        }
-        throw BasedError.noValidURL(message: "Could not construct target url for file upload")
-    }
 }
 
 extension Publisher {

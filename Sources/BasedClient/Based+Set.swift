@@ -13,15 +13,12 @@ extension Based {
     public func set(
         query: Query
     ) async throws -> String? {
-        let data = try await _set(query: query)
-        let set = try decoder.decode([String: String].self, from: data)
-        return set["id"]
-    }
-    
-    private func _set(query: Query) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            let payload = Json.object(query.dictionary())
-            addRequest(type: .set, payload: payload, continuation: continuation, name: "")
+        let queryString = query.jsonStringify()
+        do {
+            let result: [String: String] = try await function(name: "based-db-set", payload: queryString)
+            return result["id"]
+        } catch {
+            throw error
         }
     }
     

@@ -15,7 +15,7 @@ typealias CallbackId = CInt
 /// Observe id present in subscription callbacks
 typealias ObserveId = CInt
 /// Get or Function callback
-typealias Callback = @Sendable (_ data: String, _ error: String) throws -> ()
+typealias Callback = @Sendable (_ data: String, _ error: String) -> ()
 /// Observe callback
 typealias ObserveCallback = @Sendable (_ data: String, _ checksum: UInt64, _ error: String, _ observeId: ObserveId) -> ()
 /// Auth callback

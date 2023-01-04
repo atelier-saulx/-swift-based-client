@@ -15,4 +15,10 @@ public struct BasedConfiguration {
     let name: String = "@based/edge"
     let key: String = ""
     let optionalKey: Bool = false
+    
+    public init(org: String, project: String, env: String) {
+        self.org = org
+        self.project = project
+        self.env = env
+    }
 }

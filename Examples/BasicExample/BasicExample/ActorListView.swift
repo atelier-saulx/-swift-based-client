@@ -40,11 +40,11 @@ public struct Actors: Decodable {
                     )
             )
         )
-        let publisher: Based.DataPublisher<Actors> = Current.client.based.publisher(query: query)
-        task = publisher
-            .replaceError(with: Actors(actors: []))
-            .receive(on: DispatchQueue.main)
-            .assign(to: \ActorListViewModel.actors, on: self)
+//        let publisher: Based.DataPublisher<Actors> = Current.client.based.publisher(query: query)
+//        task = publisher
+//            .replaceError(with: Actors(actors: []))
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: \ActorListViewModel.actors, on: self)
     }
     
     func dispose() {

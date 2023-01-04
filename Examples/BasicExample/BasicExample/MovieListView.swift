@@ -36,11 +36,11 @@ class MovieListViewModel: ObservableObject {
             .field("movies", .field("name", true), .field("id", true), .list(.find(.traverse("children"), .filter(.from("type"), .operator("="), .value("movie")))))
         )
 
-        let publisher: Based.DataPublisher<Movies> = Current.client.based.publisher(query: query)
-        task = publisher
-            .replaceError(with: Movies(movies: []))
-            .receive(on: DispatchQueue.main)
-            .assign(to: \MovieListViewModel.movies, on: self)
+//        let publisher: Based.DataPublisher<Movies> = Current.client.based.publisher(query: query)
+//        task = publisher
+//            .replaceError(with: Movies(movies: []))
+//            .receive(on: DispatchQueue.main)
+//            .assign(to: \MovieListViewModel.movies, on: self)
     }
     
     func dispose() {

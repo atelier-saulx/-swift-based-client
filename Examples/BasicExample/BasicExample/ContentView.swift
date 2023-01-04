@@ -16,18 +16,33 @@ class ViewModel: ObservableObject {
     @Published var statusText = "Updating schema..."
 
     func setup() async {
-        try? await Current.client.configure()
-        Task { @MainActor in
-            statusText = "Preparing..."
+        
+//        - counter, an observable that fires every second
+//        - crasher, a NON-observable that fires an error
+//        - obsCrasher, an observable that crashes
+
+        let based = Based.init(configuration: .init(org: "airhub", project: "airhub", env: "edge"))
+        
+        do {
+            let test: [String: Int] = try await based.get(name: "counter")
+            print(test)
+        } catch {
+            print(error)
         }
-        try? await Current.client.prepare()
-        Task { @MainActor in
-            statusText = "Setup data..."
-        }
-        try? await Current.client.fillDatabase()
-        Task { @MainActor in
-            ready = true
-        }
+        
+        
+//        try? await Current.client.configure()
+//        Task { @MainActor in
+//            statusText = "Preparing..."
+//        }
+//        try? await Current.client.prepare()
+//        Task { @MainActor in
+//            statusText = "Setup data..."
+//        }
+//        try? await Current.client.fillDatabase()
+//        Task { @MainActor in
+//            ready = true
+//        }
     }
 }
 

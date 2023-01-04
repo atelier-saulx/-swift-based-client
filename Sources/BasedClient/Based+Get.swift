@@ -10,154 +10,43 @@ import NakedJson
 
 extension Based {
     
-    public func __get<T: Decodable>(name: String, payload: Json = [:]) async throws -> T {
-        return try await withCheckedThrowingContinuation { [decoder] continuation in
-            Task {
-                await Current.basedClient.get(name: name, payload: "", callback: { data, error in
-                    guard
-                        error.isEmpty,
-                        let data = data.data(using: .utf8),
-                        let model = try? decoder.decode(T.self, from: data)
-                    else {
-                        continuation.resume(throwing: NSError(domain: "", code: -1))
-                        return
-                    }
+    public func get<Result: Decodable>(name: String, payload: Json = [:]) async throws -> Result {
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self
+            else {
+                continuation.resume(throwing: BasedError.other(message: "Function could not complete"))
+                return
+            }
+            do {
+                let payload = try self.jsonEncoder.encode(payload)
+                Task {
+                    await Current.basedClient.get(name: name, payload: payload.description) { dataString, errorString in
+                        guard
+                            let data = dataString.data(using: .utf8),
+                            errorString.isEmpty
+                        else {
                             
-                    continuation.resume(returning: model)
-//                    if error.isEmpty {
-//                        do {
-//                            let data = data.data(using: .utf8)
-//                            let model = try decoder.decode(T.self, from: data!)
-//                            continuation.resume(returning: model)
-//                        } catch error {
-//                            continuation.resume(throwing: NSError(domain: "", code: -1))
-//                        }
-//                    } else {
-//                        continuation.resume(throwing: NSError(domain: "", code: -1))
-//                    }
-                })
-            }
-        }
-    }
-    
-    public func get<T: Decodable>(name: String, payload: Json = [:]) async throws -> T {
-        try await withCheckedThrowingContinuation { [decoder] continuation in
-            Task {
-                await addGetSubscriber(payload: payload, onData: { data, checksum in
-                    guard let data = data as? Data else {
-                        continuation.resume(throwing: BasedError.other(message: "Could not decode to \(T.self)"))
-                        return
-                    }
-                    do {
-                        let model = try decoder.decode(T.self, from: data)
-                        continuation.resume(returning: model)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
-                }, onError: { error in
-                    continuation.resume(throwing: error)
-                }, subscriptionId: nil, name: name)
-            }
-        }
-    }
-    
-    public func get<T: Decodable>(query: Query) async throws -> T {
-        let data = try await _get(query: query)
-        return try decoder.decode(T.self, from: data)
-    }
-    
-    private func _get(query: Query) async throws -> Data {
-        try await withCheckedThrowingContinuation { continuation in
-            let payload = Json.object(query.dictionary())
-            addRequest(type: .get, payload: payload, continuation: continuation, name: "")
-        }
-    }
-    
-    private func addGetSubscriber(
-        payload: Json,
-        onData: @escaping DataCallback,
-        onError: ErrorCallback?,
-        subscriptionId: SubscriptionId?,
-        name: String?
-    ) async {
-        
-        let finalSubscriptionId =
-            subscriptionId
-            ??
-            self.generateSubscriptionId(payload: payload, name: name)
-
-        let cache = await cache.fetch(with: finalSubscriptionId)
-        var subscription = await subscriptionManager.subscription(with: finalSubscriptionId)
-        
-        if let sub = subscription {
-            
-            if let error = sub.error {
-                if beingAuth {
-                    await onError?(error)
-                } else {
-                    await subscriptionManager
-                        .addSubscriber(
-                            for: finalSubscriptionId,
-                            and: SubscriptionCallback(onError: onError, onData: onData)
-                        )
-                }
-            } else if let cache = cache {
-                await onData(cache.value, cache.checksum)
-            } else {
-                await subscriptionManager
-                    .addSubscriber(
-                        for: finalSubscriptionId,
-                        and: SubscriptionCallback(onError: onError, onData: onData)
-                    )
-            }
-        } else {
-            subscription = SubscriptionModel(
-                payload: payload,
-                name: name,
-                subscribers: [:]
-            )
-            
-            await subscriptionManager.updateSubscription(with: finalSubscriptionId, subscription: subscription!)
-            await subscriptionManager.addSubscriber(for: finalSubscriptionId, and: SubscriptionCallback(onError: onError, onData: onData))
-            
-            var dontSend = false
-            let subscriptionMessages = await messages.allSubscriptionMessages()
-            var messagesToDelete = [Message]()
-            var messageToUpdate = [Message]()
-            
-            subscriptionMessages.forEach { message in
-                let type = message.requestType
-                let id = message.id
-                
-                if (type == .unsubscribe || type == .sendSubscriptionData) && id == finalSubscriptionId {
-                    messagesToDelete.append(message)
-                } else if (type == .subscription || type == .getSubscription) && id == subscriptionId {
-                    dontSend = true
-                    if type == .subscription {
-                        var updatedMessage = message
-                        if let checksum = cache?.checksum, checksum != checksum {
-                            updatedMessage.checksum = checksum
+                            let error = BasedError.from(errorString)
+                            continuation.resume(throwing: error)
+                            return
                         }
-                        updatedMessage.requestMode = .sendDataBackWithSubscription
-                        messageToUpdate.append(updatedMessage)
+                        do {
+                            let value = try self.decoder.decode(Result.self, from: data)
+                            continuation.resume(returning: value)
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
-            }
-            
-            await messages.removeSubscriptionMessages(with: messagesToDelete)
-            await messages.updateSubscriptionMessages(with: messageToUpdate)
-            
-            if dontSend == false {
-                let message = SendSubscriptionGetDataMessage(
-                    id: finalSubscriptionId,
-                    query: payload,
-                    checksum: cache?.checksum,
-                    customObservableFuncName: name
-                )
-                
-                addToMessages(message)
+            } catch {
+                continuation.resume(throwing: error)
             }
         }
+    }
+    
+    public func get<Result: Decodable>(query: Query) async throws -> Result {
+        let queryString = query.jsonStringify()
+        return try await function(name: "based-db-get", payload: queryString)
     }
     
 }
