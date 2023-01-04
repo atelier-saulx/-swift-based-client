@@ -26,6 +26,9 @@ class ViewModel: ObservableObject {
         do {
             let test: [String: Int] = try await based.get(name: "counter")
             print(test)
+            
+            let schema = try await based.schema()
+            print(schema)
         } catch {
             print(error)
         }

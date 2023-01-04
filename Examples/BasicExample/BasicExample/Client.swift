@@ -20,7 +20,7 @@ extension Client {
         based: Based(configuration: BasedConfiguration(org: "_ENV_", project: "_PRJ_", env: "_ORG_")),
         configure: {
             let result = try? await Current.client.based
-                .configure(schema: [
+                .update(schema: [
                     "types": [
                         "movie": [
                             "fields": [
