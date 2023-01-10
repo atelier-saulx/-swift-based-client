@@ -2,7 +2,7 @@ import Foundation
 import NakedJson
 
 extension Based {
-    /*
+    
     actor BasedIteratorStorage<Element, Failure: Error> {
         typealias SubscriptionIdentifiers = (subscriptionId: Int, subscriberId: String)
         
@@ -163,5 +163,4 @@ extension Based {
         return BasedSequence(type: .func(name, jsonPayload), based: self)
     }
     
-    */
 }
