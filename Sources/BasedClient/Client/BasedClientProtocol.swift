@@ -72,12 +72,12 @@ protocol BasedClientProtocol {
     ///     - payload: as a valid json string
     ///     - callback: callback that the observable will trigger.
     ///     - returns subscription id
-    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> CInt
+    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> ObserveId
     
     /// Unobserve
     ///  - parameters
     ///     - observeId: Id returned from calling observe
-    func unobserve(observeId: CInt) async
+    func unobserve(observeId: ObserveId) async
     
     /// Based client function calls
     ///  - parameters

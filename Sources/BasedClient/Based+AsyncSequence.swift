@@ -4,18 +4,16 @@ import NakedJson
 extension Based {
     
     actor BasedIteratorStorage<Element, Failure: Error> {
-        typealias SubscriptionIdentifiers = (subscriptionId: Int, subscriberId: String)
         
         private var bufferedValues: [Result<Element, Failure>] = []
         private var waitingContinuation: CheckedContinuation<Result<Element, Failure>, Never>? = nil
         
         var isMutatingSubscribtion: Bool = false
-        var subscriptionIdentifiers: SubscriptionIdentifiers?
+        var subscriptionIdentifier: ObserveId?
         
         func enqueue(_ result: Result<Element, Failure>) {
             if let continuation = waitingContinuation {
                 continuation.resume(returning: result)
-                
                 self.waitingContinuation = nil
             } else {
                 bufferedValues.append(result)
@@ -47,25 +45,25 @@ extension Based {
             return result
         }
         
-        func subscribe(subscription: () async -> SubscriptionIdentifiers) async {
-            guard isMutatingSubscribtion == false, subscriptionIdentifiers == nil else { return }
+        func subscribe(subscription: () async -> ObserveId) async {
+            guard isMutatingSubscribtion == false, subscriptionIdentifier == nil else { return }
             
             isMutatingSubscribtion = true
             
-            subscriptionIdentifiers = await subscription()
+            subscriptionIdentifier = await subscription()
             
             isMutatingSubscribtion = false
         }
         
-        func unsubscribe(_ unsubscription: (SubscriptionIdentifiers) async -> Void) async {
-            guard isMutatingSubscribtion == false, let ids = subscriptionIdentifiers else { return }
+        func unsubscribe(_ unsubscription: (ObserveId) async -> Void) async {
+            guard isMutatingSubscribtion == false, let ids = subscriptionIdentifier else { return }
             
             isMutatingSubscribtion = true
             
             await unsubscription(ids)
             
             isMutatingSubscribtion = false
-            subscriptionIdentifiers = nil
+            subscriptionIdentifier = nil
         }
     }
     
@@ -80,41 +78,39 @@ extension Based {
         }
         
         func subscribeIfNeeded() async {
-            guard await storage.subscriptionIdentifiers == nil else { return }
+            guard await storage.subscriptionIdentifier == nil else { return }
             
-            let name: String?
+            let name: String
             let payload: Json
             
             switch type {
             case .query(let query):
-                name = nil
+                name = "based-db-observe"
                 payload = .object(query.dictionary())
             case .func(let functionName, let functionPayload):
                 name = functionName
                 payload = functionPayload
             }
             
-            let dataCallback: DataCallback = { [storage, based] data, checksum in
+            let callback: ObserveCallback = { [storage, based] dataString, checksum, errorString, observeId in
+                guard
+                    let data = dataString.data(using: .utf8),
+                    errorString.isEmpty
+                else {
+                    let error = BasedError.from(errorString)
+                    Task { await storage.enqueue(.failure(error)) }
+                    return
+                }
                 do {
                     let result = try based.decoder.decode(Element.self, from: data)
-                    await storage.enqueue(.success(result))
+                    Task { await storage.enqueue(.success(result)) }
                 } catch {
-                    await storage.enqueue(.failure(error))
+                    Task { await storage.enqueue(.failure(error)) }
                 }
             }
             
-            let errorCallback: ErrorCallback = { [storage] error in
-                await storage.enqueue(.failure(error))
-            }
-            
             await storage.subscribe {
-                await based.addSubscriber(
-                    payload: payload,
-                    onData: dataCallback,
-                    onError: errorCallback,
-                    subscriptionId: type.generateSubscriptionId(),
-                    name: name
-                )
+                await Current.basedClient.observe(name: name, payload: payload.description, callback: callback)
             }
         }
         
@@ -126,8 +122,8 @@ extension Based {
         
         deinit {
             Task {
-                await storage.unsubscribe { ids in
-                    await based.removeSubscriber(subscriptionId: ids.subscriptionId, subscriberId: ids.subscriberId)
+                await storage.unsubscribe { id in
+                    await Current.basedClient.unobserve(observeId: id)
                 }
             }
         }
@@ -163,4 +159,8 @@ extension Based {
         return BasedSequence(type: .func(name, jsonPayload), based: self)
     }
     
+}
+
+enum SubscriptionType {
+    case query(Query), `func`(_ name: String, _ payload: Json)
 }
