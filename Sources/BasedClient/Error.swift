@@ -35,7 +35,7 @@ public struct BasedErrorData: Decodable {
 
 public enum BasedError: Error {
     case
-        serverError(BasedErrorData),
+        serverError(data: BasedErrorData),
         missingToken(message: String?),
         noValidURL(message: String?),
         uploadError(message: String?),
@@ -52,6 +52,6 @@ extension BasedError {
             return .other(message: "Something unexpected went wrong")
         }
         
-        return BasedError.serverError(errorData)
+        return BasedError.serverError(data: errorData)
     }
 }
