@@ -9,7 +9,6 @@ import SwiftUI
 import BasedClient
 
 
-
 class ViewModel: ObservableObject {
     
     @Published var ready = false
