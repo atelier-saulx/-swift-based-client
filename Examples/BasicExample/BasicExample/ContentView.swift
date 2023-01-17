@@ -7,7 +7,45 @@
 
 import SwiftUI
 import BasedClient
+import Foundation
 
+public struct AirHubAsyncSequence<Element>: AsyncSequence {
+    public final class Iterator: AsyncIteratorProtocol {
+        private var produceNext: () async throws -> Element?
+        
+        init<Upstream: AsyncIteratorProtocol>(upstream: Upstream) where Element == Upstream.Element {
+            var mutableCopy = upstream
+            produceNext = {
+                try await mutableCopy.next()
+            }
+        }
+        
+        public func next() async throws -> Element? {
+            guard !Task.isCancelled else {
+                return nil
+            }
+            return try await produceNext()
+        }
+    }
+    
+    private let makeIterator: () -> Iterator
+    
+    init<Upstream: AsyncSequence>(upstream: Upstream) where Element == Upstream.Element {
+        makeIterator = {
+            Iterator(upstream: upstream.makeAsyncIterator())
+        }
+    }
+    
+    public func makeAsyncIterator() -> Iterator {
+        makeIterator()
+    }
+}
+
+extension AsyncSequence {
+    func asAirHubAsyncSequence() -> AirHubAsyncSequence<Element> {
+        .init(upstream: self)
+    }
+}
 
 class ViewModel: ObservableObject {
     
@@ -15,6 +53,7 @@ class ViewModel: ObservableObject {
     @Published var statusText = "Updating schema..."
     
     let based = Based.init(configuration: .init(org: "airhub", project: "airhub", env: "edge"))
+    
 //    let test: [String: Int] = based.subscribe(name: "counter")
 //
 //    func getCounter() async {
@@ -24,28 +63,45 @@ class ViewModel: ObservableObject {
 //            }
 //        }
 //    }
+    
+    var sequence: AirHubAsyncSequence<[String: Int]>!
+    var task: Task<(), Error>?
 
+    @MainActor
     func setup() async {
+        
+        sequence = based.subscribe(name: "counter").asAirHubAsyncSequence()
+        task = Task {
+            do {
+                for try await c in sequence {
+                    print(c)
+                }
+            } catch {
+                print(error)
+            }
+        }
+        
+//        do {
+//            let test: [String: Int] = try await based.get(name: "counter")
+//            print(test)
+//            
+//            //            let schema = try await based.schema()
+//            //            print(schema)
+//        } catch {
+//            print(error)
+//        }
+//        
+//        sequence = nil
+        Task.detached {
+            try await Task.sleep(nanoseconds: UInt64(3 * 1_000_000_000))
+            self.task?.cancel()
+        }
         
 //        - counter, an observable that fires every second
 //        - crasher, a NON-observable that fires an error
 //        - obsCrasher, an observable that crashes
 
-        
-        
-        do {
-            let test: [String: Int] = try await based.get(name: "counter")
-            print(test)
-            
-
-//            try based.subscribe(name: "counter").asAirHubAsyncSequence()
-        
-            
-            let schema = try await based.schema()
-            print(schema)
-        } catch {
-            print(error)
-        }
+    
         
         
 //        try? await Current.client.configure()
@@ -90,47 +146,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
-
-//func subscribe<Payload: Encodable, Response: Decodable>(
-//    _ callSignature: RemoteCallSignature<Payload, Response>,
-//    payload: Payload
-//) throws -> AirHubAsyncSequence<Response> {
-//    return try based.subscribe(name: callSignature.name, payload: payload).asAirHubAsyncSequence()
-//}
-//
-//
-//public struct AirHubAsyncSequence<Element>: AsyncSequence {
-//    public final class Iterator: AsyncIteratorProtocol {
-//        private var produceNext: () async throws -> Element?
-//
-//        init<Upstream: AsyncIteratorProtocol>(upstream: Upstream) where Element == Upstream.Element {
-//            var mutableCopy = upstream
-//            produceNext = {
-//                try await mutableCopy.next()
-//            }
-//        }
-//
-//        public func next() async throws -> Element? {
-//            try await produceNext()
-//        }
-//    }
-//
-//    private let makeIterator: () -> Iterator
-//
-//    init<Upstream: AsyncSequence>(upstream: Upstream) where Element == Upstream.Element {
-//        makeIterator = {
-//            Iterator(upstream: upstream.makeAsyncIterator())
-//        }
-//    }
-//
-//    public func makeAsyncIterator() -> Iterator {
-//        makeIterator()
-//    }
-//}
-//
-//extension AsyncSequence {
-//    func asAirHubAsyncSequence() -> AirHubAsyncSequence<Element> {
-//        .init(upstream: self)
-//    }
-//}

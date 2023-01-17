@@ -121,7 +121,11 @@ extension Based {
         }
         
         deinit {
+//            guard let id = subscriptionIdentifier else { return }
+//            Current.basedClient.unobserve(observeId: id)
             Task {
+                print("deinit:: ")
+                print(storage == nil)
                 await storage.unsubscribe { id in
                     await Current.basedClient.unobserve(observeId: id)
                 }
