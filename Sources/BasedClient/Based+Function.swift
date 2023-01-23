@@ -10,6 +10,20 @@ import NakedJson
 
 extension Based {
 
+    /**
+     Execute a specific function with a given payload and returns the result.
+     
+     - Parameters:
+        - name: A string representing the name of the function to execute.
+        - payload: An object conforming to the Encodable protocol, representing the payload to be sent with the function request. Default value is nil.
+     
+     - Returns:
+        A Result object conforming to the Decodable protocol, representing the result of the function execution.
+     
+     - Throws:
+        BasedError
+   
+     */
     public func function<Payload: Encodable, Result: Decodable>(name: String, payload: Payload? = nil) async throws -> Result {
         do {
             var payloadString = ""

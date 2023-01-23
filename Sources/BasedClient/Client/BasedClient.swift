@@ -140,10 +140,12 @@ final class BasedClient: BasedClientProtocol {
     func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> ObserveId {
         let id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
         await observeCallbacks.add(callback: callback, id: id)
+        dataInfo("OBSERVE \(id)")
         return id
     }
     
     func unobserve(observeId: ObserveId) async {
+        dataInfo("UNOBSERVE \(observeId)")
         basedCClient.unobserve(clientId: clientId, subscriptionId: observeId)
         await observeCallbacks.remove(id: observeId)
     }

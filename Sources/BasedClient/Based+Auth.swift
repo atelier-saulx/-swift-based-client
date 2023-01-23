@@ -33,7 +33,12 @@ extension Based {
         }
     }
     
-    /// Sign out
+    /**
+     Sign out the user and remove the auth token.
+     
+     - Returns:
+        A Boolean value indicating the success of the sign out operation.
+     */
     @discardableResult
     public func signOut() async -> Bool {
         return await withCheckedContinuation { continuation in

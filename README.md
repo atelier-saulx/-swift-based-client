@@ -10,7 +10,12 @@ let client = Based(config: BasedConfig(env: "env", project: "projectName", org: 
 ```
 ## Get
 ```
-let res: Root = try await client.get(query: BasedQuery.query(.field("children", .field("name", true), .field("id", true),.list(true))))
+        do {
+            let result: [String: Int] = try await based.get(name: "functionName")
+            print(result)
+        } catch {
+            print(error)
+        }
 ```
 ## Delete
 ```
@@ -22,10 +27,23 @@ let res = try await client.set(query: BasedQuery.query(.field("type", "thing"), 
 ```
 ## Observe
 ```
-let publisher: Based.DataPublisher<SomeType> = client.publisher(name: "some-func-name", payload: [:])
-cancellable = publisher.receive(on: DispatchQueue.main).sink(receiveCompletion: { completion in
-    print("Received completion: \(completion)")
-}, receiveValue: { value in
-    print(values)
-})
+    var sequence: BasedAsyncSequence<[String: Int]>!
+    var task: Task<(), Error>?
+    
+    ...
+        
+    sequence = based.subscribe(name: "functionName").asBasedAsyncSequence()
+    task = Task {
+        do {
+            for try await c in sequence {
+                print(c)
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
+    ...
+    task.cancel()
+    task = nil
 ```

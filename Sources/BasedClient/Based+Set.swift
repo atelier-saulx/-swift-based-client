@@ -10,6 +10,16 @@ import NakedJson
 
 extension Based {
     
+    /**
+     * Sets a query in the database.
+     *
+     * - Parameters:
+     *   - query: The query to set in the database.
+     * - Returns:
+     *      The id of the set query as a string, or nil if the operation fails.
+     * - Throws:
+     *      An error if the operation fails.
+     */
     public func set(
         query: Query
     ) async throws -> String? {

@@ -15,5 +15,7 @@ extension OSLog {
 }
 
 func dataInfo(_ msg: String...) {
+#if DEBUG
     os_log("Data %{public}@ logged in", log: OSLog.dataFlow, type: .info, msg)
+#endif
 }

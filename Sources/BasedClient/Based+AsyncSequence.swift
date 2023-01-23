@@ -1,6 +1,10 @@
 import Foundation
 import NakedJson
 
+enum SubscriptionType {
+    case query(Query), `func`(_ name: String, _ payload: Json)
+}
+
 extension Based {
     
     actor BasedIteratorStorage<Element, Failure: Error> {
@@ -121,12 +125,8 @@ extension Based {
         }
         
         deinit {
-//            guard let id = subscriptionIdentifier else { return }
-//            Current.basedClient.unobserve(observeId: id)
-            Task {
-                print("deinit:: ")
-                print(storage == nil)
-                await storage.unsubscribe { id in
+            Task { [weak storage] in
+                await storage?.unsubscribe { id in
                     await Current.basedClient.unobserve(observeId: id)
                 }
             }
@@ -147,14 +147,47 @@ extension Based {
         }
     }
     
+    /// This function returns an instance of "BasedSequence" class that is initialized with the type of the sequence being ".query(query)"
+    ///
+    /// - Parameters:
+    ///    - query: an instance of the Query
+    ///    - resultType: the type of the elements that will be returned in the sequence. It is set to "Element.self" by default
+    ///
+    /// - Returns:
+    ///     A BasedSequence object containing the subscribed sequence.
     public func subscribe<Element: Decodable>(query: Query, resultType: Element.Type = Element.self) -> BasedSequence<Element> {
         return BasedSequence(type: .query(query), based: self)
     }
     
+    /**
+     Subscribe to a specific sequence and return a BasedSequence object.
+     
+     - Parameters:
+        - name: A string representing the name of the sequence to subscribe to.
+        - payload: A JSON object containing additional information to be sent with the subscription request. Default value is an empty dictionary.
+        - resultType: The type of the decodable element. Default value is the Element.self.
+     
+     - Returns:
+        A BasedSequence object containing the subscribed sequence.
+     */
     public func subscribe<Element: Decodable>(name: String, payload: Json = [:], resultType: Element.Type = Element.self) -> BasedSequence<Element> {
         return BasedSequence(type: .func(name, payload), based: self)
     }
     
+    /**
+     Subscribe to a specific sequence and return a BasedSequence object.
+     
+     - Parameters:
+        - name: A string representing the name of the sequence to subscribe to.
+        - payload: An object conforming to the Encodable protocol, representing additional information to be sent with the subscription request.
+        - resultType: The type of the decodable element. Default value is the Element.self.
+     
+     - Throws:
+        An error if the encoding of the payload object fails.
+     
+     - Returns:
+        A BasedSequence object containing the subscribed sequence.
+     */
     public func subscribe<Payload: Encodable, Element: Decodable>(name: String, payload: Payload, resultType: Element.Type = Element.self) throws -> BasedSequence<Element> {
         let encoder = NakedJsonEncoder()
         
@@ -165,6 +198,40 @@ extension Based {
     
 }
 
-enum SubscriptionType {
-    case query(Query), `func`(_ name: String, _ payload: Json)
+public struct BasedAsyncSequence<Element>: AsyncSequence {
+    public final class Iterator: AsyncIteratorProtocol {
+        private var produceNext: () async throws -> Element?
+        
+        init<Upstream: AsyncIteratorProtocol>(upstream: Upstream) where Element == Upstream.Element {
+            var mutableCopy = upstream
+            produceNext = {
+                try await mutableCopy.next()
+            }
+        }
+        
+        public func next() async throws -> Element? {
+            guard !Task.isCancelled else {
+                return nil
+            }
+            return try await produceNext()
+        }
+    }
+    
+    private let makeIterator: () -> Iterator
+    
+    init<Upstream: AsyncSequence>(upstream: Upstream) where Element == Upstream.Element {
+        makeIterator = {
+            Iterator(upstream: upstream.makeAsyncIterator())
+        }
+    }
+    
+    public func makeAsyncIterator() -> Iterator {
+        makeIterator()
+    }
+}
+
+extension AsyncSequence {
+    public func asBasedAsyncSequence() -> BasedAsyncSequence<Element> {
+        .init(upstream: self)
+    }
 }

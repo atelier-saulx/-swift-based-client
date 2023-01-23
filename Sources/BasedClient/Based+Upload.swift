@@ -132,7 +132,14 @@ extension Uploader: URLSessionTaskDelegate {
 extension Based {
 
     /**
-     
+     upload function is used to upload a file to a specified URL.
+     - Parameters:
+        - fileUrl: A `URL` object representing the file to be uploaded.
+        - targetUrl: (Optional) A `URL` object representing the target URL where the file should be uploaded. If not provided, the file will be uploaded to the default target URL.
+        - mimeType: (Optional) A `String` representing the mime type of the file. If not provided, the mime type will be inferred from the file extension.
+        - name: (Optional) A `String` representing the name of the file. If not provided, the file name will be used.
+        - id: (Optional) A `String` representing an id of the file. If not provided, the file will not have an id.
+     - Returns: An `AnyPublisher<UploadStatus, Error>` object that emits an `UploadStatus` value upon successful completion and an `Error` object in case of failure.
      */
     public func upload(
         fileUrl: URL,
@@ -145,7 +152,14 @@ extension Based {
     }
     
     /**
-     
+     upload function is used to upload a file to a specified URL.
+     - Parameters:
+        - data: Data object representing the file to be uploaded.
+        - targetUrl: (Optional) A `URL` object representing the target URL where the file should be uploaded. If not provided, the file will be uploaded to the default target URL.
+        - mimeType: (Optional) A `String` representing the mime type of the file. If not provided, the mime type will be inferred from the file extension.
+        - name: (Optional) A `String` representing the name of the file. If not provided, the file name will be used.
+        - id: (Optional) A `String` representing an id of the file. If not provided, the file will not have an id.
+     - Returns: An `AnyPublisher<UploadStatus, Error>` object that emits an `UploadStatus` value upon successful completion and an `Error` object in case of failure.
      */
     public func upload(
         data: Data,
@@ -164,7 +178,12 @@ extension Based {
                 
                 guard
                     let self = self,
-                    let targetUrl = URL(string: Current.basedClient.service(org: self.configuration.org, project: self.configuration.project, env: self.configuration.env))
+                    let targetUrl = URL(string: Current.basedClient.service(
+                            org: self.configuration.org,
+                            project: self.configuration.project,
+                            env: self.configuration.env
+                        )
+                    )
                 else {
                     throw BasedError.uploadError(message: "Could not create upload url")
                 }
