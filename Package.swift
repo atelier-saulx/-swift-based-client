@@ -3,6 +3,7 @@
 
 import PackageDescription
 
+
 let package = Package(
     name: "swift-based-client",
     platforms: [
@@ -15,7 +16,7 @@ let package = Package(
             targets: ["BasedClient"])
     ],
     targets: [
-        .binaryTarget(name: "Based", url: "https://github.com/atelier-saulx/based-universal/releases/download/v1.0.1/based-universal-v1.0.1-xcframework.zip", checksum: "3216f95099385a420b9311ff64bb832425173baee325595e0a45341aa2fcd3e3"),
+        .binaryTarget(name: "Based", url: "https://github.com/atelier-saulx/based-universal/releases/download/v1.0.2/based-universal-v1.0.2-xcframework.zip", checksum: "1ecaa6b7bd423371189a930640620092d1c86712bf8d59046fec096057c1fae5"),
 //        .binaryTarget(
 //            name: "Based",
 //            path: "Based.xcframework"),
