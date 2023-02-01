@@ -27,9 +27,9 @@ public struct BasedErrorData: Decodable {
              methodNotAllowed = 40501,
              rateLimit = 40029
     }
-    let code: BasedServerErrorCode
-    let message: String
-    let statusMessage: String
+    public let code: BasedServerErrorCode
+    public let message: String
+    public let statusMessage: String
 }
 
 
