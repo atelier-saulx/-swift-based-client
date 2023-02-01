@@ -133,7 +133,7 @@ extension Based {
         }
     }
     
-    public struct BasedSequence<Element: Decodable>: AsyncSequence {
+    public struct BasedAsyncSequence<Element: Decodable>: AsyncSequence {
         let type: SubscriptionType
         let based: Based
         
@@ -147,20 +147,20 @@ extension Based {
         }
     }
     
-    /// This function returns an instance of "BasedSequence" class that is initialized with the type of the sequence being ".query(query)"
+    /// This function returns an instance of "BasedAsyncSequence" class that is initialized with the type of the sequence being ".query(query)"
     ///
     /// - Parameters:
     ///    - query: an instance of the Query
     ///    - resultType: the type of the elements that will be returned in the sequence. It is set to "Element.self" by default
     ///
     /// - Returns:
-    ///     A BasedSequence object containing the subscribed sequence.
-    public func subscribe<Element: Decodable>(query: Query, resultType: Element.Type = Element.self) -> BasedSequence<Element> {
-        return BasedSequence(type: .query(query), based: self)
+    ///     A BasedAsyncSequence object containing the subscribed sequence.
+    public func subscribe<Element: Decodable>(query: Query, resultType: Element.Type = Element.self) -> BasedAsyncSequence<Element> {
+        return BasedAsyncSequence(type: .query(query), based: self)
     }
     
     /**
-     Subscribe to a specific sequence and return a BasedSequence object.
+     Subscribe to a specific sequence and return a BasedAsyncSequence object.
      
      - Parameters:
         - name: A string representing the name of the sequence to subscribe to.
@@ -168,14 +168,14 @@ extension Based {
         - resultType: The type of the decodable element. Default value is the Element.self.
      
      - Returns:
-        A BasedSequence object containing the subscribed sequence.
+        A BasedAsyncSequence object containing the subscribed sequence.
      */
-    public func subscribe<Element: Decodable>(name: String, payload: Json = [:], resultType: Element.Type = Element.self) -> BasedSequence<Element> {
-        return BasedSequence(type: .func(name, payload), based: self)
+    public func subscribe<Element: Decodable>(name: String, payload: Json = [:], resultType: Element.Type = Element.self) -> BasedAsyncSequence<Element> {
+        return BasedAsyncSequence(type: .func(name, payload), based: self)
     }
     
     /**
-     Subscribe to a specific sequence and return a BasedSequence object.
+     Subscribe to a specific sequence and return a BasedAsyncSequence object.
      
      - Parameters:
         - name: A string representing the name of the sequence to subscribe to.
@@ -186,14 +186,14 @@ extension Based {
         An error if the encoding of the payload object fails.
      
      - Returns:
-        A BasedSequence object containing the subscribed sequence.
+        A BasedAsyncSequence object containing the subscribed sequence.
      */
-    public func subscribe<Payload: Encodable, Element: Decodable>(name: String, payload: Payload, resultType: Element.Type = Element.self) throws -> BasedSequence<Element> {
+    public func subscribe<Payload: Encodable, Element: Decodable>(name: String, payload: Payload, resultType: Element.Type = Element.self) throws -> BasedAsyncSequence<Element> {
         let encoder = NakedJsonEncoder()
         
         let jsonPayload = try encoder.encode(payload)
         
-        return BasedSequence(type: .func(name, jsonPayload), based: self)
+        return BasedAsyncSequence(type: .func(name, jsonPayload), based: self)
     }
     
 }
