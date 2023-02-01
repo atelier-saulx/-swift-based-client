@@ -6,7 +6,7 @@
 //
 
 public struct BasedErrorData: Decodable {
-    enum BasedServerErrorCode: Int, Decodable {
+    public enum BasedServerErrorCode: Int, Decodable {
         case functionError = 50001,
              authorizeFunctionError = 50002,
              noOservableCacheAvailable = 50003,
