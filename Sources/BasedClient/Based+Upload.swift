@@ -20,6 +20,7 @@ struct UploadOptions {
     let name: String?
     let id: String?
     let mimeType: String?
+    let authToken: String //security token
 }
 
 struct Upload {
@@ -65,7 +66,7 @@ final class Uploader: NSObject {
         request.setValue(upload.mimeType ?? "text/plain", forHTTPHeaderField: "Content-Type")
         request.setValue(upload.id ?? "", forHTTPHeaderField: "File-Id")
         request.setValue(upload.name ?? "", forHTTPHeaderField: "File-Name")
-        request.setValue(upload.token, forHTTPHeaderField: "Authorization")
+        request.setValue(upload.token, forHTTPHeaderField: "JSON-authorization")
         request.setValue("chunked", forHTTPHeaderField: "Transfer-Encoding")
         
         let task: URLSessionUploadTask
@@ -146,9 +147,10 @@ extension Based {
         targetUrl: URL? = nil,
         mimeType: String? = nil,
         name: String? = nil,
-        id: String? = nil
+        id: String? = nil,
+        authToken: String
     ) -> AnyPublisher<UploadStatus, Error> {
-        return _upload(options: UploadOptions(uploadType: .file(fileUrl), targetUrl: targetUrl, name: name, id: id, mimeType: mimeType))
+        return _upload(options: UploadOptions(uploadType: .file(fileUrl), targetUrl: targetUrl, name: name, id: id, mimeType: mimeType, authToken: authToken))
     }
     
     /**
@@ -166,15 +168,16 @@ extension Based {
         targetUrl: URL? = nil,
         mimeType: String? = nil,
         name: String? = nil,
-        id: String? = nil
+        id: String? = nil,
+        authToken: String
     ) -> AnyPublisher<UploadStatus, Error> {
-        return _upload(options: UploadOptions(uploadType: .data(data), targetUrl: targetUrl, name: name, id: id, mimeType: mimeType))
+        return _upload(options: UploadOptions(uploadType: .data(data), targetUrl: targetUrl, name: name, id: id, mimeType: mimeType, authToken: authToken))
     }
     
     private func _upload(options: UploadOptions) -> AnyPublisher<UploadStatus, Error> {
-        Just((options, "token"))
+        Just(options)
             .setFailureType(to: Error.self)
-            .asyncMap { [weak self] args -> Upload in
+            .asyncMap { [weak self] options -> Upload in
                 
                 guard
                     let self = self,
@@ -183,17 +186,18 @@ extension Based {
                             project: self.configuration.project,
                             env: self.configuration.env
                         )
+                        .appending("/based-db-file-upload")
                     )
                 else {
                     throw BasedError.uploadError(message: "Could not create upload url")
                 }
-            
-                let (options, token) = args
                 
                 var id = options.id
                 if id == nil {
                     id = try await self.set(query: .query(.field("type", "file")))
                 }
+                
+                let urlEncodedJson = "{\"token\":\"\(options.authToken)\"}".addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) ?? ""
                 
                 return Upload(
                     uploadType: options.uploadType,
@@ -201,7 +205,7 @@ extension Based {
                     name: options.name,
                     id: id,
                     mimeType: options.mimeType,
-                    token: token
+                    token: urlEncodedJson
                 )
         
             }
