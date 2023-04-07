@@ -42,7 +42,7 @@ func decode<T: Decodable>(data: Data) -> T {
     return value
 }
 let result: Bool = decode(data: data)
-//print(result)
+print(result)
 
 
 func makeCString(from str: String) -> UnsafeMutablePointer<CChar> {

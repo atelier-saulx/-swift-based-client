@@ -24,23 +24,30 @@ public struct Movies: Decodable {
 class MovieListViewModel: ObservableObject {
     
     @Published var movies = Movies(movies: [])
-    private var task: AnyCancellable?
+    private var task: Task<(), Error>?
+    private var sequence: BasedAsyncSequence<Movies>?
     
     func fetchMovies() {
-        
-//        Task {
-//        let test: Movies? = try? await Current.client.based.get(name: "movies", payload: [:])
-//        print(test ?? "")
-//        }
+
         let query = BasedQuery.query(
             .field("movies", .field("name", true), .field("id", true), .list(.find(.traverse("children"), .filter(.from("type"), .operator("="), .value("movie")))))
         )
-
-//        let publisher: Based.DataPublisher<Movies> = Current.client.based.publisher(query: query)
-//        task = publisher
-//            .replaceError(with: Movies(movies: []))
-//            .receive(on: DispatchQueue.main)
-//            .assign(to: \MovieListViewModel.movies, on: self)
+        
+        sequence = Current.client.based.subscribe(query: query).asBasedAsyncSequence()
+        
+        if let sequence {
+            
+            task = Task {
+                do {
+                    for try await movies in sequence {
+                        self.movies = movies
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+            
+        }
     }
     
     func dispose() {

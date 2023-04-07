@@ -9,13 +9,13 @@
 /* Begin PBXBuildFile section */
 		492AB67327B6C93B007F14E8 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492AB67227B6C93B007F14E8 /* Environment.swift */; };
 		492AB67527B6C9F6007F14E8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492AB67427B6C9F6007F14E8 /* Client.swift */; };
+		49394090299CDF2F00E6D5CA /* BasedClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 499BFCE929413F27002B1764 /* BasedClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		493C5C3A27BB9F8D0006E445 /* MovieListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493C5C3927BB9F8D0006E445 /* MovieListView.swift */; };
 		49423C9926DB838C0001C5E4 /* BasicExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49423C9826DB838C0001C5E4 /* BasicExampleApp.swift */; };
 		49423C9B26DB838C0001C5E4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49423C9A26DB838C0001C5E4 /* ContentView.swift */; };
 		49423C9D26DB838D0001C5E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49423C9C26DB838D0001C5E4 /* Assets.xcassets */; };
 		49423CA026DB838D0001C5E4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49423C9F26DB838D0001C5E4 /* Preview Assets.xcassets */; };
 		499BFCEA29413F27002B1764 /* BasedClient in Frameworks */ = {isa = PBXBuildFile; productRef = 499BFCE929413F27002B1764 /* BasedClient */; };
-		499BFCEC29413F67002B1764 /* BasedClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 499BFCE929413F27002B1764 /* BasedClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		49D82DAF27C04E3400B94E8B /* TypeChooserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D82DAE27C04E3400B94E8B /* TypeChooserView.swift */; };
 		49D82DB327C0535200B94E8B /* ActorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D82DB227C0535200B94E8B /* ActorListView.swift */; };
 /* End PBXBuildFile section */
@@ -27,7 +27,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				499BFCEC29413F67002B1764 /* BasedClient in Embed Frameworks */,
+				49394090299CDF2F00E6D5CA /* BasedClient in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;

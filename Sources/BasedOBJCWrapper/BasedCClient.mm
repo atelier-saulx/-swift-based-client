@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "BasedCClient.h"
-#import "Based.h"
+#import <based/based.h>
 
 @interface BasedCClient ()
 @end

@@ -9,6 +9,11 @@ import SwiftUI
 import BasedClient
 import Foundation
 
+public struct LoginResponse: Decodable {
+    public let userId: String
+    public let token: String
+    public let refreshToken: String
+}
 
 class ViewModel: ObservableObject {
     
@@ -17,6 +22,7 @@ class ViewModel: ObservableObject {
 
     @MainActor
     func setup() async {
+        
         try? await Current.client.configure()
         Task { @MainActor in
             statusText = "Preparing..."
@@ -29,6 +35,7 @@ class ViewModel: ObservableObject {
         Task { @MainActor in
             ready = true
         }
+
     }
 }
 

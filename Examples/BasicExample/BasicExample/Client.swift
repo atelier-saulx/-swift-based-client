@@ -39,6 +39,7 @@ extension Client {
             print(result ?? "")
         },
         prepare: {
+            
             let query = BasedQuery.query(
                 .field("movies", .field("name", true), .field("id", true), .list(.find(.traverse("children"), .filter(.from("type"), .operator("="), .value("movie")))))
             )
