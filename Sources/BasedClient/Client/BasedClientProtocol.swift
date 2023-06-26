@@ -102,7 +102,8 @@ protocol BasedClientProtocol {
         env: String,
         name: String,
         key: String,
-        optionalKey: Bool
+        optionalKey: Bool,
+        html: Bool
     ) -> String
     
     /// Based client init

@@ -43,8 +43,9 @@ extension BasedClientProtocol {
         env: String,
         name: String = "@based/edge",
         key: String = "",
-        optionalKey: Bool = false
+        optionalKey: Bool = false,
+        html: Bool = false
     ) -> String {
-        return basedCClient.service(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey)
+        return basedCClient.service(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey, html: html)
     }
 }
