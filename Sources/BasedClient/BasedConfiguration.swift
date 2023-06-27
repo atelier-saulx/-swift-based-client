@@ -8,7 +8,7 @@
 import Foundation
 
 public struct BasedConfiguration {
-    let cluster: String = "https://d15p61sp2f2oaj.cloudfront.net/"
+    let cluster: String = "production"
     let org: String
     let project: String
     let env: String
