@@ -17,7 +17,7 @@ public struct AuthState: JsonConvertible {
     public let persistent: Bool?
     public let type: String?
     
-    init(
+    public init(
         token: String? = nil,
         userId: String? = nil,
         refreshToken: String? = nil,
