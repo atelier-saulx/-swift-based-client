@@ -8,7 +8,7 @@
 import Foundation
 import NakedJson
 
-public struct AuthState: JsonConvertible {
+public struct AuthState: JsonConvertible, Decodable {
     
     public let token: String?
     public let userId: String?
@@ -67,15 +67,15 @@ extension Based {
     ///
     /// If you send an empty string token, sdk will deauthorize user
     @discardableResult
-    public func signIn(authState: AuthState) async -> Bool {
+    public func signIn(authState: AuthState) async -> AuthState {
         let json = try? authState.asJson()
         return await withCheckedContinuation { continuation in
             Current.basedClient.auth(token: json?.description ?? "{}") { [decoder] data in
                 guard
                     let data = data.data(using: .utf8),
-                    let result = try? decoder.decode(Bool.self, from: data)
+                    let result = try? decoder.decode(AuthState.self, from: data)
                 else {
-                    continuation.resume(returning: false)
+                    continuation.resume(returning: AuthState())
                     return
                 }
                 continuation.resume(returning: result)
@@ -90,14 +90,14 @@ extension Based {
         A Boolean value indicating the success of the sign out operation.
      */
     @discardableResult
-    public func signOut() async -> Bool {
+    public func signOut() async -> AuthState {
         return await withCheckedContinuation { continuation in
             Current.basedClient.auth(token: "{}") { [decoder] data in
                 guard
                     let data = data.data(using: .utf8),
-                    let result = try? decoder.decode(Bool.self, from: data)
+                    let result = try? decoder.decode(AuthState.self, from: data)
                 else {
-                    continuation.resume(returning: false)
+                    continuation.resume(returning: AuthState())
                     return
                 }
                 continuation.resume(returning: result)
