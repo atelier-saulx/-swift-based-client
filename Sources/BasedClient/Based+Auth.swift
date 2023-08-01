@@ -62,12 +62,12 @@ extension Based {
     
     /// Authorize user with token
     /// - Parameters:
-    ///   - token: token to be used for auth
+    /// - authState: AuthState
     /// - Returns: Result of authorization
     ///
     /// If you send an empty string token, sdk will deauthorize user
     @discardableResult
-    public func signIn(authState: AuthState) async -> AuthState {
+    public func set(authState: AuthState) async -> AuthState {
         let json = try? authState.asJson()
         return await withCheckedContinuation { continuation in
             Current.basedClient.auth(token: json?.description ?? "{}") { [decoder] data in
@@ -75,7 +75,7 @@ extension Based {
                     let data = data.data(using: .utf8),
                     let result = try? decoder.decode(AuthState.self, from: data)
                 else {
-                    continuation.resume(returning: AuthState())
+                    continuation.resume(returning: AuthState()) //should not occur
                     return
                 }
                 continuation.resume(returning: result)
@@ -87,10 +87,10 @@ extension Based {
      Sign out the user and remove the auth token.
      
      - Returns:
-        A Boolean value indicating the success of the sign out operation.
+        An empty AuthState value
      */
     @discardableResult
-    public func signOut() async -> AuthState {
+    public func clearAuth() async -> AuthState {
         return await withCheckedContinuation { continuation in
             Current.basedClient.auth(token: "{}") { [decoder] data in
                 guard

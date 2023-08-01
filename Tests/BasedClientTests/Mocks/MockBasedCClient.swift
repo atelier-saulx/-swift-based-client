@@ -9,6 +9,10 @@ import Foundation
 @testable import BasedClient
 
 class MockBasedCClient: BasedCClientProtocol {
+    func service(clientId: BasedClientID, cluster: String, org: String, project: String, env: String, name: String, key: String, optionalKey: Bool, html: Bool) -> String {
+        ""
+    }
+    
     func create() -> Int32 {
         1
     }
@@ -49,10 +53,6 @@ class MockBasedCClient: BasedCClientProtocol {
         }
         
         return id
-    }
-    
-    func service(clientId: BasedClientID, cluster: String, org: String, project: String, env: String, name: String, key: String, optionalKey: Bool) -> String {
-        ""
     }
     
     var observeCallbackParam: (data: UnsafeMutablePointer<CChar>, error: UnsafeMutablePointer<CChar>, subscriptionId: CInt)?
