@@ -62,7 +62,6 @@ enum HandlerType {
 /// Callback for auth
 private func handleAuthCallback(data: UnsafePointer<CChar>) {
     let dataString = String(cString: data)
-    dataInfo("AUTH DATA:: \(dataString)")
     guard dataString.isEmpty == false else { return }
     Current.basedClient.callbackHandler(with: .auth(data: dataString))
 }
@@ -72,7 +71,6 @@ private func handleAuthCallback(data: UnsafePointer<CChar>) {
 private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
-    dataInfo("GET DATA:: \(dataString), ERROR:: \(errorString)")
     Current.basedClient.callbackHandler(with: .get(id: subscriptionId, data: dataString, error: errorString))
 }
 
@@ -80,7 +78,6 @@ private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<
 private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
-    dataInfo("FUNC DATA:: \(dataString), ERROR:: \(errorString)")
     Current.basedClient.callbackHandler(with: .function(id: subscriptionId, data: dataString, error: errorString))
 }
 
@@ -88,7 +85,6 @@ private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePoi
 private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64, error: UnsafePointer<CChar>, observeId: CInt) {
     let dataString = String(cString: data)
     let errorString = String(cString: error)
-    dataInfo("OBSERVE DATA:: \(dataString), ERROR:: \(errorString)")
     Current.basedClient.callbackHandler(with: .observe(id: observeId, data: dataString, checksum: checksum, error: errorString))
 }
 
