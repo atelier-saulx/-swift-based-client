@@ -2,7 +2,9 @@ import Foundation
 import NakedJson
 
 enum SubscriptionType {
-    case query(Query), `func`(_ name: String, _ payload: Json)
+    case
+        query(Query),
+        `func`(_ name: String, _ payload: Json)
 }
 
 extension Based {

@@ -8,8 +8,6 @@
 import Foundation
 @_exported import BasedOBJCWrapper
 
-private let clusterUrlString = "https://d15p61sp2f2oaj.cloudfront.net/"
-
 extension BasedClientProtocol {
     
     func connect(urlString: String) {
@@ -17,11 +15,11 @@ extension BasedClientProtocol {
     }
     
     func connect(
-        cluster: String = clusterUrlString,
+        cluster: String = "production",
         org: String,
         project: String,
         env: String,
-        name: String = "@based/edge",
+        name: String = "@based/env-hub",
         key: String = "",
         optionalKey: Bool = false
     ) {
@@ -37,11 +35,11 @@ extension BasedClientProtocol {
     }
     
     func service(
-        cluster: String = clusterUrlString,
+        cluster: String = "production",
         org: String,
         project: String,
         env: String,
-        name: String = "@based/edge",
+        name: String = "@based/env-hub",
         key: String = "",
         optionalKey: Bool = false,
         html: Bool = false

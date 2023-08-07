@@ -12,7 +12,7 @@ public struct BasedConfiguration {
     let org: String
     let project: String
     let env: String
-    let name: String = "@based/edge"
+    let name: String = "@based/env-hub"
     let key: String = ""
     let optionalKey: Bool = false
     
