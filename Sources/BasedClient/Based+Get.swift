@@ -27,7 +27,7 @@ extension Based {
      */
     public func get<Result: Decodable>(name: String, payload: Json = [:]) async throws -> Result {
         try await withCheckedThrowingContinuation { [weak self] continuation in
-            guard let self = self
+            guard let self
             else {
                 continuation.resume(throwing: BasedError.other(message: "Function could not complete"))
                 return

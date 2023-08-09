@@ -128,6 +128,7 @@ final class BasedClient: BasedClientProtocol {
         basedCClient.auth(clientId: clientId, token: token, callback: handleAuthCallback)
     }
     
+    @Sendable
     func get(name: String, payload: String, callback: @escaping Callback) async {
         let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
         await getCallbacks.add(callback: callback, id: id)
