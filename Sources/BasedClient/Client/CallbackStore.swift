@@ -7,15 +7,15 @@
 
 import Foundation
 
-actor CallbacksStore<K: Hashable, V: Sendable> {
+struct CallbacksStore<K: Hashable, V: Sendable> {
     private var callbacks: [K: V] = [:]
-    func add(callback: V, id: K) {
+    mutating func add(callback: V, id: K) {
         callbacks[id] = callback
     }
     func fetch(id: K) -> V? {
         callbacks[id]
     }
-    func remove(id: K) {
+    mutating func remove(id: K) {
         callbacks.removeValue(forKey: id)
     }
     func perform(_ closure: @escaping (K, V) -> ()) {

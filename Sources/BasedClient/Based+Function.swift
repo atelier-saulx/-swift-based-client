@@ -44,23 +44,21 @@ extension Based {
                 continuation.resume(throwing: BasedError.other(message: "Function could not complete"))
                 return
             }
-            Task {
-                await Current.basedClient.function(name: name, payload: payload) { dataString, errorString in
-                    guard
-                        let data = dataString.data(using: .utf8),
-                        errorString.isEmpty
-                    else {
-                        
-                        let error = BasedError.from(errorString)
-                        continuation.resume(throwing: error)
-                        return
-                    }
-                    do {
-                        let value = try self.decoder.decode(Result.self, from: data)
-                        continuation.resume(returning: value)
-                    } catch {
-                        continuation.resume(throwing: error)
-                    }
+            Current.basedClient.function(name: name, payload: payload) { dataString, errorString in
+                guard
+                    let data = dataString.data(using: .utf8),
+                    errorString.isEmpty
+                else {
+                    
+                    let error = BasedError.from(errorString)
+                    continuation.resume(throwing: error)
+                    return
+                }
+                do {
+                    let value = try self.decoder.decode(Result.self, from: data)
+                    continuation.resume(returning: value)
+                } catch {
+                    continuation.resume(throwing: error)
                 }
             }
         }

@@ -23,20 +23,17 @@ typealias AuthCallback = @Sendable (_ data: String) -> ()
 
 
 /// Observe callback store
-@globalActor
-actor ObserveCallbacks {
+struct ObserveCallbacks {
     static var shared: CallbacksStore<ObserveId, ObserveCallback> = .init()
 }
 
 /// Get callback store
-@globalActor
-actor GetCallbacks {
+struct GetCallbacks {
     static var shared: CallbacksStore<CallbackId, Callback> = .init()
 }
 
 /// Get callback store
-@globalActor
-actor FunctionCallbacks {
+struct FunctionCallbacks {
     static var shared: CallbacksStore<CallbackId, Callback> = .init()
 }
 
@@ -114,13 +111,10 @@ final class BasedClient: BasedClientProtocol {
     }
     
     deinit {
-        Task { [weak self] in
-            guard let self = self else { return }
-            await observeCallbacks.perform { id, callback in
-                self.basedCClient.unobserve(clientId: self.clientId, subscriptionId: id)
-            }
-            self.basedCClient.delete(clientId)
+        observeCallbacks.perform { id, callback in
+            self.basedCClient.unobserve(clientId: self.clientId, subscriptionId: id)
         }
+        basedCClient.delete(clientId)
     }
     
     func auth(token: String, callback: @escaping AuthCallback) {
@@ -128,27 +122,27 @@ final class BasedClient: BasedClientProtocol {
         basedCClient.auth(clientId: clientId, token: token, callback: handleAuthCallback)
     }
     
-    func get(name: String, payload: String, callback: @escaping Callback) async {
+    func get(name: String, payload: String, callback: @escaping Callback) {
         let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
-        await getCallbacks.add(callback: callback, id: id)
+        getCallbacks.add(callback: callback, id: id)
     }
     
     func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> ObserveId {
         let id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
-        await observeCallbacks.add(callback: callback, id: id)
+        observeCallbacks.add(callback: callback, id: id)
         dataInfo("OBSERVE \(id)")
         return id
     }
     
-    func unobserve(observeId: ObserveId) async {
+    func unobserve(observeId: ObserveId) {
         dataInfo("UNOBSERVE \(observeId)")
         basedCClient.unobserve(clientId: clientId, subscriptionId: observeId)
-        await observeCallbacks.remove(id: observeId)
+        observeCallbacks.remove(id: observeId)
     }
     
-    func function(name: String, payload: String, callback: @escaping Callback) async {
+    func function(name: String, payload: String, callback: @escaping Callback) {
         let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
-        await functionCallbacks.add(callback: callback, id: id)
+        functionCallbacks.add(callback: callback, id: id)
     }
     
     func callbackHandler(with type: HandlerType) {
@@ -157,35 +151,26 @@ final class BasedClient: BasedClientProtocol {
             authCallback?(data)
             authCallback = nil
         case let .function(id, data, error):
-            Task { await callFunction(id: id, data: data, error: error) }
+            callFunction(id: id, data: data, error: error)
         case let .get(id, data, error):
-            Task { await callGet(id: id, data: data, error: error) }
+            callGet(id: id, data: data, error: error)
         case let .observe(id, data, checksum, error):
-            Task { await callObserve(id: id, data: data, checksum: checksum, error: error) }
+            callObserve(id: id, data: data, checksum: checksum, error: error)
         }
     }
     
-    @ObserveCallbacks
     private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
-        Task {
-            await observeCallbacks.fetch(id: id)?(data, checksum, error, id)
-        }
+        observeCallbacks.fetch(id: id)?(data, checksum, error, id)
     }
     
-    @FunctionCallbacks
     private func callFunction(id: CallbackId, data: String, error: String) {
-        Task {
-            await functionCallbacks.fetch(id: id)?(data, error)
-            await functionCallbacks.remove(id: id)
-        }
+        functionCallbacks.fetch(id: id)?(data, error)
+        functionCallbacks.remove(id: id)
     }
     
-    @GetCallbacks
     private func callGet(id: CallbackId, data: String, error: String) {
-        Task {
-            await getCallbacks.fetch(id: id)?(data, error)
-            await getCallbacks.remove(id: id)
-        }
+        getCallbacks.fetch(id: id)?(data, error)
+        getCallbacks.remove(id: id)
     }
     
 }
