@@ -69,6 +69,9 @@ private func handleAuthCallback(data: UnsafePointer<CChar>) {
 /// Callback get handler
 /// Dealing with c pointer functions forces a global approach
 private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
+    let lock = NSLock()
+    lock.lock()
+    defer { lock.unlock() }
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     Current.basedClient.callbackHandler(with: .get(id: subscriptionId, data: dataString, error: errorString))
@@ -76,6 +79,9 @@ private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<
 
 /// Callback function handler
 private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
+    let lock = NSLock()
+    lock.lock()
+    defer { lock.unlock() }
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     Current.basedClient.callbackHandler(with: .function(id: subscriptionId, data: dataString, error: errorString))
