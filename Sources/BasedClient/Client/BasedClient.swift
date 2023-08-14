@@ -89,12 +89,18 @@ final class BasedClient: BasedClientProtocol {
     
     private let getQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
     private let getSemaphore = DispatchSemaphore(value: 1)
-    
-    private let callGetQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
+    private let callGetQueue = DispatchQueue(label: "com.based.client.call.get", attributes: .concurrent)
     private let callGetSemaphore = DispatchSemaphore(value: 1)
     
     private let functionQueue = DispatchQueue(label: "com.based.client.function", attributes: .concurrent)
-    private let observeQueue = DispatchQueue(label: "com.based.client.pbserve", attributes: .concurrent)
+    private let functionSemaphore = DispatchSemaphore(value: 1)
+    private let callFunctionQueue = DispatchQueue(label: "com.based.client.call.function", attributes: .concurrent)
+    private let callFunctionSemaphore = DispatchSemaphore(value: 1)
+    
+    private let observeQueue = DispatchQueue(label: "com.based.client.observe", attributes: .concurrent)
+    private let observeSemaphore = DispatchSemaphore(value: 1)
+    private let callObserveQueue = DispatchQueue(label: "com.based.client.call.observe", attributes: .concurrent)
+    private let callObserveSemaphore = DispatchSemaphore(value: 1)
 
     var authCallback: AuthCallback?
     var getCallbacks: GetCallbackStore
@@ -142,17 +148,16 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func observe(name: String, payload: String, callback: @escaping ObserveCallback) throws -> ObserveId {
-        let semaphore = DispatchSemaphore(value: 1)
         var id: ObserveId?
         observeQueue.async { [weak self] in
             guard let self else { return }
             id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
-            semaphore.signal()
+            observeSemaphore.signal()
         }
         guard let id = id else { throw BasedError.other(message: "Observe failed") }
         observeCallbacks.add(callback: callback, id: id)
         dataInfo("OBSERVE \(id)")
-        semaphore.wait()
+        observeSemaphore.wait()
         return id
     }
     
@@ -163,13 +168,12 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func function(name: String, payload: String, callback: @escaping Callback) {
-        let semaphore = DispatchSemaphore(value: 1)
         functionQueue.async { [weak self] in
             guard let self else { return }
-            semaphore.wait()
+            functionSemaphore.wait()
             let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
             functionCallbacks.add(callback: callback, id: id)
-            semaphore.signal()
+            functionSemaphore.signal()
         }
     }
     
@@ -188,23 +192,21 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
-        let semaphore = DispatchSemaphore(value: 1)
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        callObserveQueue.async { [weak self] in
             guard let self else { return }
-            semaphore.wait()
+            callObserveSemaphore.wait()
             observeCallbacks.fetch(id: id)?(data, checksum, error, id)
-            semaphore.signal()
+            callObserveSemaphore.signal()
         }
     }
     
     private func callFunction(id: CallbackId, data: String, error: String) {
-        let semaphore = DispatchSemaphore(value: 1)
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        callFunctionQueue.async { [weak self] in
             guard let self else { return }
-            semaphore.wait()
+            callFunctionSemaphore.wait()
             functionCallbacks.fetch(id: id)?(data, error)
             functionCallbacks.remove(id: id)
-            semaphore.signal()
+            callFunctionSemaphore.signal()
         }
     }
     
