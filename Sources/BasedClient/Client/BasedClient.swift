@@ -88,6 +88,8 @@ private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64,
 final class BasedClient: BasedClientProtocol {
     
     private let getQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
+    private let getSemaphore = DispatchSemaphore(value: 1)
+    
     private let functionQueue = DispatchQueue(label: "com.based.client.function", attributes: .concurrent)
     private let observeQueue = DispatchQueue(label: "com.based.client.pbserve", attributes: .concurrent)
 
@@ -127,13 +129,12 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func get(name: String, payload: String, callback: @escaping Callback) {
-        let semaphore = DispatchSemaphore(value: 0)
         getQueue.async { [weak self] in
             guard let self else { return }
-            semaphore.wait()
+            getSemaphore.wait()
             let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
             getCallbacks.add(callback: callback, id: id)
-            semaphore.signal()
+            getSemaphore.signal()
         }
     }
     
