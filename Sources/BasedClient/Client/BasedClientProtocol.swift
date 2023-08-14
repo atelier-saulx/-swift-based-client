@@ -64,7 +64,7 @@ protocol BasedClientProtocol {
     ///     - name: name of function
     ///     - payload: as a valid json string
     ///     - callback: called when server returns data
-    func get(name: String, payload: String, callback: @escaping Callback) async
+    func get(name: String, payload: String, callback: @escaping Callback)
     
     /// Observe
     ///  - parameters
@@ -72,19 +72,19 @@ protocol BasedClientProtocol {
     ///     - payload: as a valid json string
     ///     - callback: callback that the observable will trigger.
     ///     - returns subscription id
-    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> ObserveId
+    func observe(name: String, payload: String, callback: @escaping ObserveCallback) throws -> ObserveId
     
     /// Unobserve
     ///  - parameters
     ///     - observeId: Id returned from calling observe
-    func unobserve(observeId: ObserveId) async
+    func unobserve(observeId: ObserveId)
     
     /// Based client function calls
     ///  - parameters
     ///     - name: name of function
     ///     - payload: as a valid json string
     ///     - callback: called when server returns data
-    func `function`(name: String, payload: String, callback: @escaping Callback) async
+    func `function`(name: String, payload: String, callback: @escaping Callback)
     
     /// Service
     /// - Parameters:

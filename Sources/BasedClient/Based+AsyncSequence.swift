@@ -116,7 +116,12 @@ extension Based {
             }
             
             await storage.subscribe {
-                await Current.basedClient.observe(name: name, payload: payload.description, callback: callback)
+                do {
+                    let id = try Current.basedClient.observe(name: name, payload: payload.description, callback: callback)
+                    return id
+                } catch {
+                    fatalError("Could not subscribe")
+                }
             }
         }
         
@@ -129,7 +134,7 @@ extension Based {
         deinit {
             Task { [weak storage] in
                 await storage?.unsubscribe { id in
-                    await Current.basedClient.unobserve(observeId: id)
+                    Current.basedClient.unobserve(observeId: id)
                 }
             }
         }
