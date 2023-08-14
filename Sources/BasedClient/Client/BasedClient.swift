@@ -90,6 +90,9 @@ final class BasedClient: BasedClientProtocol {
     private let getQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
     private let getSemaphore = DispatchSemaphore(value: 1)
     
+    private let callGetQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
+    private let callGetSemaphore = DispatchSemaphore(value: 1)
+    
     private let functionQueue = DispatchQueue(label: "com.based.client.function", attributes: .concurrent)
     private let observeQueue = DispatchQueue(label: "com.based.client.pbserve", attributes: .concurrent)
 
@@ -206,13 +209,12 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callGet(id: CallbackId, data: String, error: String) {
-        let semaphore = DispatchSemaphore(value: 1)
-        DispatchQueue.global(qos: .background).async { [weak self] in
+        callGetQueue.async { [weak self] in
             guard let self else { return }
-            semaphore.wait()
+            callGetSemaphore.wait()
             getCallbacks.fetch(id: id)?(data, error)
             getCallbacks.remove(id: id)
-            semaphore.signal()
+            callGetSemaphore.signal()
         }
     }
     
