@@ -127,7 +127,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func get(name: String, payload: String, callback: @escaping Callback) {
-        let semaphore = DispatchSemaphore(value: 1)
+        let semaphore = DispatchSemaphore(value: 0)
         getQueue.async { [weak self] in
             guard let self else { return }
             semaphore.wait()
