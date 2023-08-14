@@ -127,7 +127,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func get(name: String, payload: String, callback: @escaping Callback) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         getQueue.async { [weak self] in
             guard let self else { return }
             semaphore.wait()
@@ -138,7 +138,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func observe(name: String, payload: String, callback: @escaping ObserveCallback) throws -> ObserveId {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         var id: ObserveId?
         observeQueue.async { [weak self] in
             guard let self else { return }
@@ -159,7 +159,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func function(name: String, payload: String, callback: @escaping Callback) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         functionQueue.async { [weak self] in
             guard let self else { return }
             semaphore.wait()
@@ -184,7 +184,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self else { return }
             semaphore.wait()
@@ -194,7 +194,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callFunction(id: CallbackId, data: String, error: String) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self else { return }
             semaphore.wait()
@@ -205,7 +205,7 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callGet(id: CallbackId, data: String, error: String) {
-        let semaphore = DispatchSemaphore(value: 0)
+        let semaphore = DispatchSemaphore(value: 1)
         DispatchQueue.global(qos: .background).async { [weak self] in
             guard let self else { return }
             semaphore.wait()
