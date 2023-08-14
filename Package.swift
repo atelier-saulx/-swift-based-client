@@ -16,10 +16,10 @@ let package = Package(
             targets: ["BasedClient"])
     ],
     targets: [
-//        .binaryTarget(name: "Based", url: "https://github.com/atelier-saulx/based-universal/releases/download/v2.1.1/based-universal-v2.1.1-xcframework.zip", checksum: "117a3f0cfbe7e1f5b1fee94f258151dbe40b8875a2cb12b39b7edc7047b29540"),
-        .binaryTarget(
-            name: "Based",
-            path: "Based.xcframework"),
+        .binaryTarget(name: "Based", url: "https://github.com/atelier-saulx/based-universal/releases/download/v2.1.2/based-universal-v2.1.2-xcframework.zip", checksum: "22c2ea1ea05750a891b2dfb224c2321d2c3b75e56c168e22c7370b566e012e4b"),
+//        .binaryTarget(
+//            name: "Based",
+//            path: "Based.xcframework"),
         .target(
             name: "BasedOBJCWrapper",
             dependencies: [
