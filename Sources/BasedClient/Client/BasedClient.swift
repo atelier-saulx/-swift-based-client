@@ -87,8 +87,9 @@ private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64,
 
 final class BasedClient: BasedClientProtocol {
     
-    let queue = DispatchQueue(label: "com.based.client", attributes: .concurrent)
-    let semaphore = DispatchSemaphore(value: 1)
+    private let getQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
+    private let functionQueue = DispatchQueue(label: "com.based.client.function", attributes: .concurrent)
+    private let observeQueue = DispatchQueue(label: "com.based.client.pbserve", attributes: .concurrent)
 
     var authCallback: AuthCallback?
     var getCallbacks: GetCallbackStore
@@ -126,26 +127,28 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func get(name: String, payload: String, callback: @escaping Callback) {
-        queue.async { [weak self] in
+        let semaphore = DispatchSemaphore(value: 0)
+        getQueue.async { [weak self] in
             guard let self else { return }
-            self.semaphore.wait()
+            semaphore.wait()
             let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
             getCallbacks.add(callback: callback, id: id)
-            self.semaphore.signal()
+            semaphore.signal()
         }
     }
     
     func observe(name: String, payload: String, callback: @escaping ObserveCallback) throws -> ObserveId {
+        let semaphore = DispatchSemaphore(value: 0)
         var id: ObserveId?
-        queue.async { [weak self] in
+        observeQueue.async { [weak self] in
             guard let self else { return }
-            self.semaphore.wait()
             id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
-            self.semaphore.signal()
+            semaphore.signal()
         }
         guard let id = id else { throw BasedError.other(message: "Observe failed") }
         observeCallbacks.add(callback: callback, id: id)
         dataInfo("OBSERVE \(id)")
+        semaphore.wait()
         return id
     }
     
@@ -156,10 +159,13 @@ final class BasedClient: BasedClientProtocol {
     }
     
     func function(name: String, payload: String, callback: @escaping Callback) {
-        queue.async { [weak self] in
+        let semaphore = DispatchSemaphore(value: 0)
+        functionQueue.async { [weak self] in
             guard let self else { return }
+            semaphore.wait()
             let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
             functionCallbacks.add(callback: callback, id: id)
+            semaphore.signal()
         }
     }
     
@@ -178,17 +184,35 @@ final class BasedClient: BasedClientProtocol {
     }
     
     private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
-        observeCallbacks.fetch(id: id)?(data, checksum, error, id)
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self else { return }
+            semaphore.wait()
+            observeCallbacks.fetch(id: id)?(data, checksum, error, id)
+            semaphore.signal()
+        }
     }
     
     private func callFunction(id: CallbackId, data: String, error: String) {
-        functionCallbacks.fetch(id: id)?(data, error)
-        functionCallbacks.remove(id: id)
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self else { return }
+            semaphore.wait()
+            functionCallbacks.fetch(id: id)?(data, error)
+            functionCallbacks.remove(id: id)
+            semaphore.signal()
+        }
     }
     
     private func callGet(id: CallbackId, data: String, error: String) {
-        getCallbacks.fetch(id: id)?(data, error)
-        getCallbacks.remove(id: id)
+        let semaphore = DispatchSemaphore(value: 0)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self else { return }
+            semaphore.wait()
+            getCallbacks.fetch(id: id)?(data, error)
+            getCallbacks.remove(id: id)
+            semaphore.signal()
+        }
     }
     
 }
