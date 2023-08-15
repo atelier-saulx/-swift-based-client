@@ -34,23 +34,21 @@ extension Based {
             }
             do {
                 let payload = try self.jsonEncoder.encode(payload)
-                Task {
-                    await Current.basedClient.get(name: name, payload: payload.description) { dataString, errorString in
-                        guard
-                            let data = dataString.data(using: .utf8),
-                            errorString.isEmpty
-                        else {
-                            
-                            let error = BasedError.from(errorString)
-                            continuation.resume(throwing: error)
-                            return
-                        }
-                        do {
-                            let value = try self.decoder.decode(Result.self, from: data)
-                            continuation.resume(returning: value)
-                        } catch {
-                            continuation.resume(throwing: error)
-                        }
+                Current.basedClient.get(name: name, payload: payload.description) { dataString, errorString in
+                    guard
+                        let data = dataString.data(using: .utf8),
+                        errorString.isEmpty
+                    else {
+                        
+                        let error = BasedError.from(errorString)
+                        continuation.resume(throwing: error)
+                        return
+                    }
+                    do {
+                        let value = try self.decoder.decode(Result.self, from: data)
+                        continuation.resume(returning: value)
+                    } catch {
+                        continuation.resume(throwing: error)
                     }
                 }
             } catch {

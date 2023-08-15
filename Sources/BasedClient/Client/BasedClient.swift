@@ -23,20 +23,17 @@ typealias AuthCallback = @Sendable (_ data: String) -> ()
 
 
 /// Observe callback store
-@globalActor
-actor ObserveCallbacks {
+struct ObserveCallbacks {
     static var shared: CallbacksStore<ObserveId, ObserveCallback> = .init()
 }
 
 /// Get callback store
-@globalActor
-actor GetCallbacks {
+struct GetCallbacks {
     static var shared: CallbacksStore<CallbackId, Callback> = .init()
 }
 
 /// Get callback store
-@globalActor
-actor FunctionCallbacks {
+struct FunctionCallbacks {
     static var shared: CallbacksStore<CallbackId, Callback> = .init()
 }
 
@@ -69,9 +66,6 @@ private func handleAuthCallback(data: UnsafePointer<CChar>) {
 /// Callback get handler
 /// Dealing with c pointer functions forces a global approach
 private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
-    let lock = NSLock()
-    lock.lock()
-    defer { lock.unlock() }
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     Current.basedClient.callbackHandler(with: .get(id: subscriptionId, data: dataString, error: errorString))
@@ -79,9 +73,6 @@ private func handleGetCallback(data: UnsafePointer<CChar>, error: UnsafePointer<
 
 /// Callback function handler
 private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePointer<CChar>, subscriptionId: CInt) {
-    let lock = NSLock()
-    lock.lock()
-    defer { lock.unlock() }
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     Current.basedClient.callbackHandler(with: .function(id: subscriptionId, data: dataString, error: errorString))
@@ -95,6 +86,21 @@ private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64,
 }
 
 final class BasedClient: BasedClientProtocol {
+    
+    private let getQueue = DispatchQueue(label: "com.based.client.get", attributes: .concurrent)
+    private let getSemaphore = DispatchSemaphore(value: 1)
+    private let callGetQueue = DispatchQueue(label: "com.based.client.call.get", attributes: .concurrent)
+    private let callGetSemaphore = DispatchSemaphore(value: 1)
+    
+    private let functionQueue = DispatchQueue(label: "com.based.client.function", attributes: .concurrent)
+    private let functionSemaphore = DispatchSemaphore(value: 1)
+    private let callFunctionQueue = DispatchQueue(label: "com.based.client.call.function", attributes: .concurrent)
+    private let callFunctionSemaphore = DispatchSemaphore(value: 1)
+    
+    private let observeQueue = DispatchQueue(label: "com.based.client.observe", attributes: .concurrent)
+    private let observeSemaphore = DispatchSemaphore(value: 1)
+    private let callObserveQueue = DispatchQueue(label: "com.based.client.call.observe", attributes: .concurrent)
+    private let callObserveSemaphore = DispatchSemaphore(value: 1)
 
     var authCallback: AuthCallback?
     var getCallbacks: GetCallbackStore
@@ -120,13 +126,10 @@ final class BasedClient: BasedClientProtocol {
     }
     
     deinit {
-        Task { [weak self] in
-            guard let self = self else { return }
-            await observeCallbacks.perform { id, callback in
-                self.basedCClient.unobserve(clientId: self.clientId, subscriptionId: id)
-            }
-            self.basedCClient.delete(clientId)
+        observeCallbacks.perform { id, callback in
+            self.basedCClient.unobserve(clientId: self.clientId, subscriptionId: id)
         }
+        self.basedCClient.delete(clientId)
     }
     
     func auth(token: String, callback: @escaping AuthCallback) {
@@ -134,27 +137,44 @@ final class BasedClient: BasedClientProtocol {
         basedCClient.auth(clientId: clientId, token: token, callback: handleAuthCallback)
     }
     
-    func get(name: String, payload: String, callback: @escaping Callback) async {
-        let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
-        await getCallbacks.add(callback: callback, id: id)
+    func get(name: String, payload: String, callback: @escaping Callback) {
+        getQueue.async { [weak self] in
+            guard let self else { return }
+            getSemaphore.wait()
+            let id = basedCClient.get(clientId: clientId, name: name, payload: payload, callback: handleGetCallback)
+            getCallbacks.add(callback: callback, id: id)
+            getSemaphore.signal()
+        }
     }
     
-    func observe(name: String, payload: String, callback: @escaping ObserveCallback) async -> ObserveId {
-        let id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
-        await observeCallbacks.add(callback: callback, id: id)
+    func observe(name: String, payload: String, callback: @escaping ObserveCallback) throws -> ObserveId {
+        var id: ObserveId?
+        observeQueue.async { [weak self] in
+            guard let self else { return }
+            id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
+            observeSemaphore.signal()
+        }
+        guard let id = id else { throw BasedError.other(message: "Observe failed") }
+        observeCallbacks.add(callback: callback, id: id)
         dataInfo("OBSERVE \(id)")
+        observeSemaphore.wait()
         return id
     }
     
-    func unobserve(observeId: ObserveId) async {
+    func unobserve(observeId: ObserveId) {
         dataInfo("UNOBSERVE \(observeId)")
         basedCClient.unobserve(clientId: clientId, subscriptionId: observeId)
-        await observeCallbacks.remove(id: observeId)
+        observeCallbacks.remove(id: observeId)
     }
     
-    func function(name: String, payload: String, callback: @escaping Callback) async {
-        let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
-        await functionCallbacks.add(callback: callback, id: id)
+    func function(name: String, payload: String, callback: @escaping Callback) {
+        functionQueue.async { [weak self] in
+            guard let self else { return }
+            functionSemaphore.wait()
+            let id = basedCClient.function(clientId: clientId, name: name, payload: payload, callback: handleFunctionCallback)
+            functionCallbacks.add(callback: callback, id: id)
+            functionSemaphore.signal()
+        }
     }
     
     func callbackHandler(with type: HandlerType) {
@@ -163,34 +183,40 @@ final class BasedClient: BasedClientProtocol {
             authCallback?(data)
             authCallback = nil
         case let .function(id, data, error):
-            Task { await callFunction(id: id, data: data, error: error) }
+            callFunction(id: id, data: data, error: error)
         case let .get(id, data, error):
-            Task { await callGet(id: id, data: data, error: error) }
+            callGet(id: id, data: data, error: error)
         case let .observe(id, data, checksum, error):
-            Task { await callObserve(id: id, data: data, checksum: checksum, error: error) }
+            callObserve(id: id, data: data, checksum: checksum, error: error)
         }
     }
     
-    @ObserveCallbacks
     private func callObserve(id: ObserveId, data: String, checksum: UInt64, error: String) {
-        Task {
-            await observeCallbacks.fetch(id: id)?(data, checksum, error, id)
+        callObserveQueue.async { [weak self] in
+            guard let self else { return }
+            callObserveSemaphore.wait()
+            observeCallbacks.fetch(id: id)?(data, checksum, error, id)
+            callObserveSemaphore.signal()
         }
     }
     
-    @FunctionCallbacks
     private func callFunction(id: CallbackId, data: String, error: String) {
-        Task {
-            await functionCallbacks.fetch(id: id)?(data, error)
-            await functionCallbacks.remove(id: id)
+        callFunctionQueue.async { [weak self] in
+            guard let self else { return }
+            callFunctionSemaphore.wait()
+            functionCallbacks.fetch(id: id)?(data, error)
+            functionCallbacks.remove(id: id)
+            callFunctionSemaphore.signal()
         }
     }
     
-    @GetCallbacks
     private func callGet(id: CallbackId, data: String, error: String) {
-        Task {
-            await getCallbacks.fetch(id: id)?(data, error)
-            await getCallbacks.remove(id: id)
+        callGetQueue.async { [weak self] in
+            guard let self else { return }
+            callGetSemaphore.wait()
+            getCallbacks.fetch(id: id)?(data, error)
+            getCallbacks.remove(id: id)
+            callGetSemaphore.signal()
         }
     }
     
