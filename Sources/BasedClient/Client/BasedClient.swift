@@ -98,7 +98,7 @@ final class BasedClient: BasedClientProtocol {
     private let callFunctionSemaphore = DispatchSemaphore(value: 1)
     
     private let observeQueue = DispatchQueue(label: "com.based.client.observe", attributes: .concurrent)
-    private let observeSemaphore = DispatchSemaphore(value: 1)
+    private let observeSemaphore = DispatchSemaphore(value: 0)
     private let callObserveQueue = DispatchQueue(label: "com.based.client.call.observe", attributes: .concurrent)
     private let callObserveSemaphore = DispatchSemaphore(value: 1)
 
@@ -151,13 +151,14 @@ final class BasedClient: BasedClientProtocol {
         var id: ObserveId?
         observeQueue.async { [weak self] in
             guard let self else { return }
-            id = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
+            let observeId = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
+            observeCallbacks.add(callback: callback, id: observeId)
+            id = observeId
             observeSemaphore.signal()
         }
-        guard let id = id else { throw BasedError.other(message: "Observe failed") }
-        observeCallbacks.add(callback: callback, id: id)
-        dataInfo("OBSERVE \(id)")
         observeSemaphore.wait()
+        guard let id = id else { throw BasedError.other(message: "Observe failed") }
+        dataInfo("OBSERVE \(id)")
         return id
     }
     
