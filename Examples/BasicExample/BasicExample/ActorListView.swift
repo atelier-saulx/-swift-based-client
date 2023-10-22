@@ -24,7 +24,8 @@ public struct Actors: Decodable {
 @MainActor class ActorListViewModel: ObservableObject {
     
     @Published var actors = Actors(actors: [])
-    private var task: AnyCancellable?
+    private var task: Task<(), Error>?
+    private var sequence: BasedAsyncSequence<Actors>?
     
     func fetchActors() {
         let query = BasedQuery.query(
@@ -40,11 +41,22 @@ public struct Actors: Decodable {
                     )
             )
         )
-        let publisher: Based.DataPublisher<Actors> = Current.client.based.publisher(query: query)
-        task = publisher
-            .replaceError(with: Actors(actors: []))
-            .receive(on: DispatchQueue.main)
-            .assign(to: \ActorListViewModel.actors, on: self)
+        
+        sequence = Current.client.based.subscribe(query: query).asBasedAsyncSequence()
+        
+        if let sequence {
+            
+            task = Task {
+                do {
+                    for try await actors in sequence {
+                        self.actors = actors
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+            
+        }
     }
     
     func dispose() {

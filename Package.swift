@@ -1,21 +1,32 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.7.1
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
+
 let package = Package(
     name: "swift-based-client",
     platforms: [
-        .iOS(.v13), .macOS(.v10_15),
+        .iOS(.v15), .macOS(.v12),
     ],
     products: [
         .library(
             name: "BasedClient",
-            targets: ["BasedClient"]),
-    ],
-    dependencies: [
+            type: .dynamic,
+            targets: ["BasedClient"])
     ],
     targets: [
+        .binaryTarget(name: "Based", url: "https://github.com/atelier-saulx/based-universal/releases/download/v2.1.3/based-universal-v2.1.3-xcframework.zip", checksum: "ac8eb4cbebde6c4df8a528b66f586e7d807d85e4b84d95d2b58b1598f90f7fca"),
+//        .binaryTarget(
+//            name: "Based",
+//            path: "Based.xcframework"),
+        .target(
+            name: "BasedOBJCWrapper",
+            dependencies: [
+                .target(name: "Based")
+            ],
+            path: "Sources/BasedOBJCWrapper"
+        ),
         .target(
             name: "NakedJson"
         ),
@@ -28,6 +39,7 @@ let package = Package(
         .target(
             name: "BasedClient",
             dependencies: [
+                .target(name: "BasedOBJCWrapper"),
                 .target(name: "NakedJson"),
             ]
         ),
@@ -35,8 +47,10 @@ let package = Package(
             name: "BasedClientTests",
             dependencies: [
                 "BasedClient",
+                .target(name: "BasedOBJCWrapper"),
                 .target(name: "NakedJson"),
             ]
-        ),
-    ]
+        )
+    ],
+    cxxLanguageStandard: .gnucxx20
 )

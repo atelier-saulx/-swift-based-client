@@ -53,4 +53,13 @@ extension Json {
         
         return value
     }
+    
+    var intArrayValue: [Int]? {
+        guard
+            let result = arrayValue?.map(\.intValue),
+            result.allSatisfy({ $0 != nil })
+        else { return nil }
+        
+        return result.compactMap { $0 }
+    }
 }

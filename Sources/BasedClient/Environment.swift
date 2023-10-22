@@ -7,9 +7,14 @@
 
 import Foundation
 
-var Current = Environment()
+var Current: Environment = .default
 
 struct Environment {
-    var patcher: Patcher = .default
-    var hasher: Hasher = .default
+    var basedClient: BasedClient = .default
+}
+
+extension Environment {
+    static let `default`: Environment = .init(
+        basedClient: .default
+    )
 }

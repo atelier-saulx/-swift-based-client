@@ -9,15 +9,30 @@
 /* Begin PBXBuildFile section */
 		492AB67327B6C93B007F14E8 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492AB67227B6C93B007F14E8 /* Environment.swift */; };
 		492AB67527B6C9F6007F14E8 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 492AB67427B6C9F6007F14E8 /* Client.swift */; };
+		49394090299CDF2F00E6D5CA /* BasedClient in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 499BFCE929413F27002B1764 /* BasedClient */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		493C5C3A27BB9F8D0006E445 /* MovieListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 493C5C3927BB9F8D0006E445 /* MovieListView.swift */; };
 		49423C9926DB838C0001C5E4 /* BasicExampleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49423C9826DB838C0001C5E4 /* BasicExampleApp.swift */; };
 		49423C9B26DB838C0001C5E4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49423C9A26DB838C0001C5E4 /* ContentView.swift */; };
 		49423C9D26DB838D0001C5E4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49423C9C26DB838D0001C5E4 /* Assets.xcassets */; };
 		49423CA026DB838D0001C5E4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 49423C9F26DB838D0001C5E4 /* Preview Assets.xcassets */; };
-		49423CA926DB84760001C5E4 /* BasedClient in Frameworks */ = {isa = PBXBuildFile; productRef = 49423CA826DB84760001C5E4 /* BasedClient */; };
+		499BFCEA29413F27002B1764 /* BasedClient in Frameworks */ = {isa = PBXBuildFile; productRef = 499BFCE929413F27002B1764 /* BasedClient */; };
 		49D82DAF27C04E3400B94E8B /* TypeChooserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D82DAE27C04E3400B94E8B /* TypeChooserView.swift */; };
 		49D82DB327C0535200B94E8B /* ActorListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49D82DB227C0535200B94E8B /* ActorListView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		499BFCE82940F2A2002B1764 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				49394090299CDF2F00E6D5CA /* BasedClient in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		492AB67227B6C93B007F14E8 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
@@ -29,6 +44,8 @@
 		49423C9C26DB838D0001C5E4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		49423C9F26DB838D0001C5E4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		49423CA126DB838D0001C5E4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		499BFCDD2940D757002B1764 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		499BFCE12940D7F2002B1764 /* Based.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Based.xcframework; path = ../../Sources/BasedCplusplusClient/Based.xcframework; sourceTree = "<group>"; };
 		49D82DAE27C04E3400B94E8B /* TypeChooserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeChooserView.swift; sourceTree = "<group>"; };
 		49D82DB227C0535200B94E8B /* ActorListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActorListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -38,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				49423CA926DB84760001C5E4 /* BasedClient in Frameworks */,
+				499BFCEA29413F27002B1764 /* BasedClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +107,8 @@
 		49423CA726DB84760001C5E4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				499BFCE12940D7F2002B1764 /* Based.xcframework */,
+				499BFCDD2940D757002B1764 /* Accelerate.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -104,6 +123,7 @@
 				49423C9126DB838C0001C5E4 /* Sources */,
 				49423C9226DB838C0001C5E4 /* Frameworks */,
 				49423C9326DB838C0001C5E4 /* Resources */,
+				499BFCE82940F2A2002B1764 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -111,7 +131,7 @@
 			);
 			name = BasicExample;
 			packageProductDependencies = (
-				49423CA826DB84760001C5E4 /* BasedClient */,
+				499BFCE929413F27002B1764 /* BasedClient */,
 			);
 			productName = BasicExample;
 			productReference = 49423C9526DB838C0001C5E4 /* BasicExample.app */;
@@ -302,10 +322,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BasicExample/Preview Content\"";
-				DEVELOPMENT_TEAM = RJW3S4HJK5;
+				DEVELOPMENT_TEAM = G3DRLYL55H;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BasicExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -324,10 +344,10 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"BasicExample/Preview Content\"";
-				DEVELOPMENT_TEAM = RJW3S4HJK5;
+				DEVELOPMENT_TEAM = G3DRLYL55H;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = BasicExample/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -363,7 +383,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		49423CA826DB84760001C5E4 /* BasedClient */ = {
+		499BFCE929413F27002B1764 /* BasedClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = BasedClient;
 		};

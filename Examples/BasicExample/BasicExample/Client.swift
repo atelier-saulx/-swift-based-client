@@ -17,10 +17,10 @@ struct Client {
 
 extension Client {
     static let `default` = Self(
-        based: Based(opts: Based.Opts(env: "_ENV_", project: "_PRJ_", org: "_ORG_")),
+        based: Based(configuration: BasedConfiguration(org: "_ENV_", project: "_PRJ_", env: "_ORG_")),
         configure: {
             let result = try? await Current.client.based
-                .configure(schema: [
+                .update(schema: [
                     "types": [
                         "movie": [
                             "fields": [
@@ -39,6 +39,7 @@ extension Client {
             print(result ?? "")
         },
         prepare: {
+            
             let query = BasedQuery.query(
                 .field("movies", .field("name", true), .field("id", true), .list(.find(.traverse("children"), .filter(.from("type"), .operator("="), .value("movie")))))
             )

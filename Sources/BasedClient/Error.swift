@@ -5,33 +5,53 @@
 //  Created by Alexander van der Werff on 31/08/2021.
 //
 
-/*
- [\"message\": \"Unauthorized request\",
-   \"type\": \"AuthorizationError\",
-   \"auth\": true,
-   \"payload\": [\"documents\": false, \"id\": \"use22bd860\"], \"name\": \"call \\\"users-observeId\\\"\"])]
- */
+public struct BasedErrorData: Decodable {
+    public enum BasedServerErrorCode: Int, Decodable {
+        case functionError = 50001,
+             authorizeFunctionError = 50002,
+             noOservableCacheAvailable = 50003,
+             observableFunctionError = 50004,
+             observeCallbackError = 50005,
+             functionNotFound = 40401,
+             functionIsNotObservable = 40402,
+             functionIsObservable = 40403,
+             functionIsStream = 40404,
+             cannotStreamToObservableFunction = 40405,
+             authorizeRejectedError = 40301,
+             invalidPayload = 40001,
+             payloadTooLarge = 40002,
+             chunkTooLarge = 40003,
+             unsupportedContentEncoding = 40004,
+             noBinaryProtocol = 40005,
+             lengthRequired = 41101,
+             methodNotAllowed = 40501,
+             rateLimit = 40029
+    }
+    public let code: BasedServerErrorCode
+    public let message: String
+    public let statusMessage: String
+}
+
 
 public enum BasedError: Error {
     case
-        configuration(_ reason: String),
-        validation(message: String?),
-        authorization(message: String, name: String?),
-        functionNotExist(message: String?),
+        serverError(data: BasedErrorData),
         missingToken(message: String?),
         noValidURL(message: String?),
+        uploadError(message: String?),
         other(message: String?)
 }
 
 extension BasedError {
-    static func from(_ errorObject: ErrorObject) -> Self {
-        switch errorObject.type {
-        case "AuthorizationError":
-            return .authorization(message: errorObject.message, name: errorObject.name)
-        case "FunctionDoesNotExistError":
-            return .functionNotExist(message: errorObject.message)
-        default:
-            return .other(message: errorObject.message)
+    /// Errors returned from the Based server
+    static func from(_ errorString: String) -> Self {
+        guard
+            let data = errorString.data(using: .utf8),
+            let errorData = try? JSONDecoder().decode(BasedErrorData.self, from: data)
+        else {
+            return .other(message: "Something unexpected went wrong")
         }
+        
+        return BasedError.serverError(data: errorData)
     }
 }

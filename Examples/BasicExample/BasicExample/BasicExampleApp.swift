@@ -12,9 +12,7 @@ import BasedClient
 @main
 class BasicExampleApp: App {
     
-    required init() {
-        
-    }
+    required init() {}
     
     var body: some Scene {
         WindowGroup {
