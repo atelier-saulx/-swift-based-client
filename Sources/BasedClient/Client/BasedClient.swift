@@ -80,6 +80,7 @@ private func handleFunctionCallback(data: UnsafePointer<CChar>, error: UnsafePoi
 
 /// Observe callback handler
 private func handleObserveCallback(data: UnsafePointer<CChar>, checksum: UInt64, error: UnsafePointer<CChar>, observeId: CInt) {
+    dataInfo(#function)
     let dataString = String(cString: data)
     let errorString = String(cString: error)
     Current.basedClient.callbackHandler(with: .observe(id: observeId, data: dataString, checksum: checksum, error: errorString))
@@ -151,6 +152,7 @@ final class BasedClient: BasedClientProtocol {
         var id: ObserveId?
         observeQueue.async { [weak self] in
             guard let self else { return }
+            dataInfo("observeQueue: ", name)
             let observeId = basedCClient.observe(clientId: clientId, name: name, payload: payload, callback: handleObserveCallback)
             observeCallbacks.add(callback: callback, id: observeId)
             id = observeId
