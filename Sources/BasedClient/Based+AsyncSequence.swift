@@ -8,6 +8,10 @@ enum SubscriptionType {
 }
 
 extension Based {
+
+    public func subscribe<Element: Decodable>(query: Query) throws -> AsyncThrowingStream<Element, Error> {
+        return basedAsyncThrowingStream(type: .query(query), based: self)
+    }
     
     public func subscribe<Payload: Encodable, Element: Decodable>(name: String, payload: Payload) throws -> AsyncThrowingStream<Element, Error> {
         let encoder = NakedJsonEncoder()
