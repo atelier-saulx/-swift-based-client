@@ -1,6 +1,6 @@
 # Based Swift client
 
-This is a port of https://github.com/atelier-saulx/based-core/tree/main/docs, an Ios client for the Based data platform.
+Swift native client for https://github.com/atelier-saulx/based-core/tree/main/docs
 =======
 # Usage
 
@@ -27,12 +27,12 @@ let res = try await client.set(query: BasedQuery.query(.field("type", "thing"), 
 ```
 ## Observe
 ```
-    var sequence: BasedAsyncSequence<[String: Int]>!
+    var sequence: AsyncThrowingStream<[String: Int]>!
     var task: Task<(), Error>?
     
     ...
         
-    sequence = based.subscribe(name: "functionName").asBasedAsyncSequence()
+    sequence = based.subscribe(name: "functionName")
     task = Task {
         do {
             for try await c in sequence {
