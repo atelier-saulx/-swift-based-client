@@ -44,7 +44,9 @@ protocol BasedClientProtocol {
         env: String,
         name: String,
         key: String,
-        optionalKey: Bool
+        optionalKey: Bool,
+        host: String,
+        discoveryUrl: String
     )
     
     /// Disconnects the client with id

@@ -14,9 +14,8 @@
 
 @implementation BasedCClient
 
-- (BasedClientID) create {
-    int clientId = Based__new_client();
-    return clientId;
+- (BasedClientID)create:(BOOL)enableTls {
+    return Based__new_client(enableTls);
 }
 
 - (void)delete:(BasedClientID)clientId {
@@ -27,8 +26,8 @@
     Based__connect_to_url(clientId, (char *)url.UTF8String);
 }
 
-- (void)connect:(BasedClientID)clientId withCluster:(NSString *)cluster withOrg:(NSString *)org withProject:(NSString *)project withEnv:(NSString *)env withName:(NSString *)name withKey:(NSString *)key withOptionalKey:(BOOL) optionalKey {
-    Based__connect(clientId, (char *)cluster.UTF8String, (char *)org.UTF8String, (char *)project.UTF8String, (char *)env.UTF8String, (char *)name.UTF8String, (char *)key.UTF8String, optionalKey);
+- (void)connect:(BasedClientID)clientId withCluster:(NSString *)cluster withOrg:(NSString *)org withProject:(NSString *)project withEnv:(NSString *)env withName:(NSString *)name withKey:(NSString *)key withOptionalKey:(BOOL)optionalKey withHost:(NSString *)host withDiscoveryUrl:(NSString *)discovery_url {
+    Based__connect(clientId, (char *)cluster.UTF8String, (char *)org.UTF8String, (char *)project.UTF8String, (char *)env.UTF8String, (char *)name.UTF8String, (char *)key.UTF8String, optionalKey, (char *)host.UTF8String, (char *)discovery_url.UTF8String);
 }
 
 - (void)disconnect:(BasedClientID)clientId {

@@ -25,8 +25,7 @@ public struct Actors: Decodable {
     
     @Published var actors = Actors(actors: [])
     private var task: Task<(), Error>?
-    private var sequence: BasedAsyncSequence<Actors>?
-    
+
     func fetchActors() {
         let query = BasedQuery.query(
             .field(
@@ -41,21 +40,15 @@ public struct Actors: Decodable {
                     )
             )
         )
-        
-        sequence = Current.client.based.subscribe(query: query).asBasedAsyncSequence()
-        
-        if let sequence {
-            
-            task = Task {
-                do {
-                    for try await actors in sequence {
-                        self.actors = actors
-                    }
-                } catch {
-                    print(error)
+
+        task = Task {
+            do {
+                for try await actors in try Current.client.based.subscribe(query: query) as AsyncThrowingStream<Actors, Error> {
+                    self.actors = actors
                 }
+            } catch {
+                print(error)
             }
-            
         }
     }
     
