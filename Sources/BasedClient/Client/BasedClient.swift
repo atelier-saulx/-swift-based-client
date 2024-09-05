@@ -109,7 +109,7 @@ final class BasedClient: BasedClientProtocol {
     var functionCallbacks: FunctionCallbackStore
     
     var basedCClient: BasedCClientProtocol
-    var enableTls: Bool = false
+    var enableTls: Bool = true
 
     /// 32 bit integer representing the id of the c++ client
     var clientId: BasedClientId
