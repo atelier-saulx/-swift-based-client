@@ -25,28 +25,21 @@ class MovieListViewModel: ObservableObject {
     
     @Published var movies = Movies(movies: [])
     private var task: Task<(), Error>?
-    private var sequence: BasedAsyncSequence<Movies>?
-    
+
     func fetchMovies() {
 
         let query = BasedQuery.query(
             .field("movies", .field("name", true), .field("id", true), .list(.find(.traverse("children"), .filter(.from("type"), .operator("="), .value("movie")))))
         )
         
-        sequence = Current.client.based.subscribe(query: query).asBasedAsyncSequence()
-        
-        if let sequence {
-            
-            task = Task {
-                do {
-                    for try await movies in sequence {
-                        self.movies = movies
-                    }
-                } catch {
-                    print(error)
+        task = Task {
+            do {
+                for try await movies in try Current.client.based.subscribe(query: query) as AsyncThrowingStream<Movies, Error> {
+                    self.movies = movies
                 }
+            } catch {
+                print(error)
             }
-            
         }
     }
     
