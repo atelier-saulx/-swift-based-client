@@ -35,7 +35,9 @@ public final class Based {
             env: configuration.env,
             name: configuration.name,
             key: configuration.key,
-            optionalKey: configuration.optionalKey
+            optionalKey: configuration.optionalKey,
+            host: configuration.host,
+            discoveryUrl: configuration.discoveryUrl
         )
     }
 }
