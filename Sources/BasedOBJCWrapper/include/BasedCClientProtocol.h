@@ -14,15 +14,16 @@ typedef int BasedClientID;
 
 @protocol BasedCClientProtocol
 
-- (int)create;
+- (int)create: (BOOL)enableTls
+NS_SWIFT_NAME(create(enableTls:));
 
 - (void)delete: (BasedClientID)clientId;
 
 - (void)connect: (BasedClientID)clientId withUrl: (NSString *)url
 NS_SWIFT_NAME(connect(clientId:url:));
 
-- (void)connect: (BasedClientID)clientId withCluster: (NSString *)cluster withOrg: (NSString *)org withProject: (NSString *)project withEnv: (NSString *)env withName: (NSString *) name withKey: (NSString *) key withOptionalKey: (BOOL) optionalKey
-NS_SWIFT_NAME(connect(clientId:cluster:org:project:env:name:key:optionalKey:));
+- (void)connect: (BasedClientID)clientId withCluster: (NSString *)cluster withOrg: (NSString *)org withProject: (NSString *)project withEnv: (NSString *)env withName: (NSString *)name withKey: (NSString *)key withOptionalKey: (BOOL)optionalKey withHost: (NSString *)host withDiscoveryUrl: (NSString *)discovery_url
+NS_SWIFT_NAME(connect(clientId:cluster:org:project:env:name:key:optionalKey:host:discoveryUrl:));
 
 - (void)disconnect: (BasedClientID)clientId
 NS_SWIFT_NAME(disconnect(clientId:));

@@ -21,9 +21,11 @@ extension BasedClientProtocol {
         env: String,
         name: String = "@based/env-hub",
         key: String = "",
-        optionalKey: Bool = false
+        optionalKey: Bool = false,
+        host: String,
+        discoveryUrl: String
     ) {
-        basedCClient.connect(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey)
+        basedCClient.connect(clientId: clientId, cluster: cluster, org: org, project: project, env: env, name: name, key: key, optionalKey: optionalKey, host: host, discoveryUrl: discoveryUrl)
     }
     
     func disconnect() {

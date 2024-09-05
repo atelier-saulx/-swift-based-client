@@ -109,10 +109,11 @@ final class BasedClient: BasedClientProtocol {
     var functionCallbacks: FunctionCallbackStore
     
     var basedCClient: BasedCClientProtocol
-    
+    var enableTls: Bool = false
+
     /// 32 bit integer representing the id of the c++ client
     var clientId: BasedClientId
-    
+
     required init(
         cClient: BasedCClientProtocol = BasedCClient(),
         observeCallbacks: ObserveCallbackStore = ObserveCallbacks.shared,
@@ -123,7 +124,7 @@ final class BasedClient: BasedClientProtocol {
         self.observeCallbacks = observeCallbacks
         self.getCallbacks = getCallbacks
         self.functionCallbacks = functionCallbacks
-        clientId = basedCClient.create()
+        clientId = basedCClient.create(enableTls: enableTls)
     }
     
     deinit {
